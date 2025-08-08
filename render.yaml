@@ -6,7 +6,7 @@ services:
     startCommand: "gunicorn global_coaches_academy.wsgi:application"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.10.0
+        value:  3.8.10
       - key: DATABASE_URL
         value: # Add your database URL here
       - key: SECRET_KEY
