@@ -1,6 +1,7 @@
 services:
   - type: web
     name: global-coaches-academy
+    plan: free
     env: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn global_coaches_academy.wsgi:application"
