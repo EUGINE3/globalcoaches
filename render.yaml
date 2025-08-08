@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: global-coaches-academy
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn global_coaches_academy.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: DATABASE_URL
+        value: # Add your database URL here
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: DJANGO_SETTINGS_MODULE
+        value: global_coaches_academy.settings
+    autoDeploy: true

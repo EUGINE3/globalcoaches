@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mentorship Portal - Global Coaches Academy{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="text-gradient mb-3">Mentorship Portal</h1>
+            <p class="lead">Connect with experienced mentors and grow your leadership skills</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="card">
+                    <div class="card-body text-center p-5">
+                        <i class="fas fa-hands-helping fa-4x text-primary mb-4"></i>
+                        <h3 class="mb-3">Coming Soon</h3>
+                        <p class="text-muted mb-4">
+                            The mentorship portal is currently under development. 
+                            You'll soon be able to connect with mentors, schedule sessions, 
+                            and track your progress.
+                        </p>
+                        <a href="{% url 'core:dashboard' %}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

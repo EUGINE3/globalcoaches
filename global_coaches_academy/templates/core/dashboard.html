@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .welcome-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .dashboard-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .quick-action {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-light);
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--text-dark);
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .quick-action:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateX(5px);
+    }
+    
+    .quick-action i {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        width: 40px;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<section class="dashboard-header">
+    <div class="container">
+        <div class="welcome-card">
+            <h1 class="mb-3">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+            <p class="mb-0">Continue your transformational leadership journey</p>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="dashboard-card">
+                <h3 class="text-gradient mb-4">Your Learning Progress</h3>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    You haven't enrolled in any programs yet. 
+                    <a href="{% url 'faculties:faculty_overview' %}" class="alert-link">Explore our faculties</a> to get started!
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3 class="text-gradient mb-4">Recent Activity</h3>
+                <div class="text-center text-muted">
+                    <i class="fas fa-clock fa-3x mb-3"></i>
+                    <p>No recent activity. Start your learning journey today!</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <h4 class="mb-4">Quick Actions</h4>
+                
+                <a href="{% url 'faculties:faculty_overview' %}" class="quick-action">
+                    <i class="fas fa-university"></i>
+                    <div>
+                        <strong>Browse Faculties</strong>
+                        <div class="text-muted small">Explore our 7 core programs</div>
+                    </div>
+                </a>
+                
+                <a href="{% url 'students:student_profile' %}" class="quick-action">
+                    <i class="fas fa-user-edit"></i>
+                    <div>
+                        <strong>Update Profile</strong>
+                        <div class="text-muted small">Complete your profile information</div>
+                    </div>
+                </a>
+                
+                <a href="{% url 'mentorship:mentorship_portal' %}" class="quick-action">
+                    <i class="fas fa-hands-helping"></i>
+                    <div>
+                        <strong>Mentorship</strong>
+                        <div class="text-muted small">Connect with mentors</div>
+                    </div>
+                </a>
+                
+                <a href="{% url 'support:support_center' %}" class="quick-action">
+                    <i class="fas fa-life-ring"></i>
+                    <div>
+                        <strong>Get Support</strong>
+                        <div class="text-muted small">FAQ and help resources</div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="dashboard-card">
+                <h4 class="mb-4">Announcements</h4>
+                <div class="alert alert-success">
+                    <strong>Welcome!</strong> Thank you for joining Global Coaches Academy. 
+                    Start by exploring our faculties and choosing your learning path.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

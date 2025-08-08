@@ -1,0 +1,1 @@
+web: gunicorn global_coaches_academy.wsgi:application
