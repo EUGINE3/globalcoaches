@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# exit on error
+set -o errexit
+apt-get update && apt-get install -y gcc libffi-dev tzdata
+ pip install --upgrade pip
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Collect static files
+cd global_coaches_academy && python manage.py collectstatic --no-input
+
+
+# Run migrations
+cd global_coaches_academy && python manage.py migrate
+
+
+

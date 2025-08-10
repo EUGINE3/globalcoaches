@@ -1,0 +1,66 @@
+{% extends 'base.html' %} {% block title %}Apply to {{ faculty.name }}{% endblock %} {% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>Apply to {{ faculty.name }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>{{ faculty.name }}</h5>
+                        <p><strong>Focus:</strong> {{ faculty.pillar_focus }}</p>
+                        <p>{{ faculty.description }}</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Program Level</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="program_level" value="masterclass" id="masterclass" checked>
+                                <label class="form-check-label" for="masterclass">Masterclass (6 months)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="program_level" value="diploma" id="diploma">
+                                <label class="form-check-label" for="diploma">Diploma (12 months)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="program_level" value="higher_diploma" id="higher_diploma">
+                                <label class="form-check-label" for="higher_diploma">Higher Diploma (12 months)</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="personal_statement" class="form-label">Personal Statement</label>
+                            <textarea class="form-control" id="personal_statement" name="personal_statement" rows="4" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="goals_objectives" class="form-label">Goals and Objectives</label>
+                            <textarea class="form-control" id="goals_objectives" name="goals_objectives" rows="3" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="previous_experience" class="form-label">Relevant Experience</label>
+                            <textarea class="form-control" id="previous_experience" name="previous_experience" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="commitment" name="commitment" required>
+                                <label class="form-check-label" for="commitment">
+                                    I commit to actively participate in all program activities
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

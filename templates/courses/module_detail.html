@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Module Details - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .module-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 80px 0 40px;
+    }
+    
+    .module-info {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .week-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        border-left: 5px solid var(--primary-color);
+        transition: all 0.3s ease;
+    }
+    
+    .week-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .week-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .week-number {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    
+    .week-theme {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+    }
+    
+    .week-value {
+        color: var(--text-light);
+        margin: 0;
+    }
+    
+    .content-section {
+        margin-bottom: 2rem;
+    }
+    
+    .content-section h5 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .quote-box {
+        background: linear-gradient(135deg, var(--accent-color), #f59e0b);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        position: relative;
+    }
+    
+    .quote-box::before {
+        content: '"';
+        font-size: 4rem;
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        opacity: 0.3;
+    }
+    
+    .assignment-card {
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .assignment-header {
+        display: flex;
+        align-items: center;
+        justify-content: between;
+        margin-bottom: 1rem;
+    }
+    
+    .assignment-title {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+    }
+    
+    .assignment-points {
+        background: var(--success-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .progress-bar {
+        background: var(--border-color);
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+    
+    .progress-fill {
+        background: linear-gradient(135deg, var(--success-color), #059669);
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+    
+    .sidebar-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        position: sticky;
+        top: 100px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Module Header -->
+<section class="module-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="module-info">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="badge bg-light text-dark px-3 py-2">GCA-M101</span>
+                        <span class="badge bg-success px-3 py-2">3 Credits</span>
+                    </div>
+                    <h1 class="mb-3">Foundations of Leadership</h1>
+                    <p class="lead mb-0">
+                        Explore the fundamental principles of transformational leadership and develop 
+                        core competencies for effective community impact.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Module Content -->
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Week 1 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">1</div>
+                        <div>
+                            <h3 class="week-theme">Leadership Foundations</h3>
+                            <p class="week-value">Integrity & Character</p>
+                        </div>
+                    </div>
+                    
+                    <div class="quote-box">
+                        <p class="mb-0">
+                            <i class="fas fa-quote-left me-2"></i>
+                            "Leadership is not about being in charge. It is about taking care of those in your charge."
+                            <br><small class="opacity-75">- Simon Sinek</small>
+                        </p>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h5><i class="fas fa-book-open"></i>Learning Content</h5>
+                        <p>
+                            This week introduces the foundational concepts of leadership, focusing on character development 
+                            and integrity as the cornerstone of effective leadership. Students will explore different 
+                            leadership styles and their applications in various contexts.
+                        </p>
+                        
+                        <h6>Key Topics:</h6>
+                        <ul>
+                            <li>Defining transformational leadership</li>
+                            <li>Character vs. competence in leadership</li>
+                            <li>Leadership styles and situational application</li>
+                            <li>Building trust and credibility</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h5><i class="fas fa-video"></i>Resources</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-play-circle text-primary me-2"></i>
+                                Video: "The Power of Character in Leadership" (15 mins)
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                Reading: "Leadership Foundations" (Chapter 1)
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-headphones text-success me-2"></i>
+                                Podcast: "Building Authentic Leadership" (25 mins)
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="assignment-card">
+                        <div class="assignment-header">
+                            <h6 class="assignment-title">
+                                <i class="fas fa-tasks me-2"></i>Weekly Assignment
+                            </h6>
+                            <span class="assignment-points">100 pts</span>
+                        </div>
+                        <p class="mb-3">
+                            <strong>Personal Leadership Assessment:</strong> Complete a comprehensive self-assessment 
+                            of your current leadership style and identify three areas for development. 
+                            Submit a 500-word reflection paper.
+                        </p>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'courses:submit_assignment' 1 %}" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>Submit Assignment
+                            </a>
+                            <button class="btn btn-outline-primary">
+                                <i class="fas fa-download me-2"></i>Download Template
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Week 2 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">2</div>
+                        <div>
+                            <h3 class="week-theme">Vision & Purpose</h3>
+                            <p class="week-value">Clarity & Direction</p>
+                        </div>
+                    </div>
+                    
+                    <div class="quote-box">
+                        <p class="mb-0">
+                            <i class="fas fa-quote-left me-2"></i>
+                            "Where there is no vision, the people perish."
+                            <br><small class="opacity-75">- Proverbs 29:18</small>
+                        </p>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h5><i class="fas fa-book-open"></i>Learning Content</h5>
+                        <p>
+                            Explore the critical role of vision in leadership and learn how to develop, 
+                            communicate, and implement a compelling vision that inspires action and drives change.
+                        </p>
+                        
+                        <h6>Key Topics:</h6>
+                        <ul>
+                            <li>Crafting a compelling vision statement</li>
+                            <li>Aligning purpose with action</li>
+                            <li>Communicating vision effectively</li>
+                            <li>Overcoming resistance to change</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="assignment-card">
+                        <div class="assignment-header">
+                            <h6 class="assignment-title">
+                                <i class="fas fa-tasks me-2"></i>Weekly Assignment
+                            </h6>
+                            <span class="assignment-points">100 pts</span>
+                        </div>
+                        <p class="mb-3">
+                            <strong>Vision Development Exercise:</strong> Create a personal or organizational 
+                            vision statement and develop a strategic plan for implementation. 
+                            Present your vision in a 3-minute video presentation.
+                        </p>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'courses:submit_assignment' 2 %}" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>Submit Assignment
+                            </a>
+                            <button class="btn btn-outline-primary">
+                                <i class="fas fa-download me-2"></i>Download Guidelines
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Week 3 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">3</div>
+                        <div>
+                            <h3 class="week-theme">Team Building</h3>
+                            <p class="week-value">Collaboration & Unity</p>
+                        </div>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h5><i class="fas fa-users"></i>Coming Soon</h5>
+                        <p class="text-muted">This week's content will be available soon. Stay tuned!</p>
+                    </div>
+                </div>
+                
+                <!-- Week 4 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">4</div>
+                        <div>
+                            <h3 class="week-theme">Impact Measurement</h3>
+                            <p class="week-value">Results & Accountability</p>
+                        </div>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h5><i class="fas fa-chart-line"></i>Coming Soon</h5>
+                        <p class="text-muted">This week's content will be available soon. Stay tuned!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sidebar-card">
+                    <h5 class="text-gradient mb-4">Module Progress</h5>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Overall Progress</span>
+                            <span class="text-primary font-weight-bold">25%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 25%"></div>
+                        </div>
+                        <small class="text-muted">1 of 4 weeks completed</small>
+                    </div>
+                    
+                    <h6 class="mb-3">Weekly Checklist</h6>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>Week 1: Leadership Foundations</span>
+                        </div>
+                        <div class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-circle text-muted me-2"></i>
+                            <span>Week 2: Vision & Purpose</span>
+                        </div>
+                        <div class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-circle text-muted me-2"></i>
+                            <span>Week 3: Team Building</span>
+                        </div>
+                        <div class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-circle text-muted me-2"></i>
+                            <span>Week 4: Impact Measurement</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-card">
+                    <h6 class="mb-3">Module Information</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <strong>Duration:</strong> 4 weeks
+                        </li>
+                        <li class="mb-2">
+                            <strong>Credits:</strong> 3
+                        </li>
+                        <li class="mb-2">
+                            <strong>Assignments:</strong> 4
+                        </li>
+                        <li class="mb-2">
+                            <strong>Format:</strong> Online
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-card">
+                    <h6 class="mb-3">Need Help?</h6>
+                    <p class="mb-3">Get support from your mentor or peers.</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'mentorship:mentorship_portal' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-tie me-2"></i>Contact Mentor
+                        </a>
+                        <a href="{% url 'support:support_center' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-life-ring me-2"></i>Get Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

@@ -1,0 +1,558 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Faculties - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(30, 64, 175, 0.9));
+        color: white;
+        padding: 100px 0 60px;
+        text-align: center;
+    }
+    
+    .faculty-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+        height: 100%;
+    }
+    
+    .faculty-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .faculty-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .faculty-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+        animation: float 20s infinite linear;
+    }
+    
+    @keyframes float {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .faculty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+    
+    .faculty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .faculty-subtitle {
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .faculty-body {
+        padding: 2rem;
+    }
+    
+    .faculty-description {
+        color: var(--text-light);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .academic-levels {
+        margin-bottom: 2rem;
+    }
+    
+    .level-badge {
+        display: inline-block;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0.25rem;
+        border: 2px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+    
+    .level-badge:hover {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        transform: scale(1.05);
+    }
+    
+    .level-badge.masterclass {
+        border-color: #10b981;
+        color: #10b981;
+    }
+    
+    .level-badge.diploma {
+        border-color: #f59e0b;
+        color: #f59e0b;
+    }
+    
+    .level-badge.higher-diploma {
+        border-color: #8b5cf6;
+        color: #8b5cf6;
+    }
+    
+    .level-badge.masterclass:hover {
+        background: #10b981;
+        color: white;
+    }
+    
+    .level-badge.diploma:hover {
+        background: #f59e0b;
+        color: white;
+    }
+    
+    .level-badge.higher-diploma:hover {
+        background: #8b5cf6;
+        color: white;
+    }
+    
+    .faculty-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-faculty {
+        flex: 1;
+        min-width: 120px;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-faculty:hover {
+        transform: translateY(-2px);
+    }
+    
+    .info-section {
+        background: var(--bg-light);
+        padding: 80px 0;
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .info-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .faculty-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+    
+    @media (max-width: 768px) {
+        .faculty-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .faculty-actions {
+            flex-direction: column;
+        }
+        
+        .btn-faculty {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="display-4 mb-3">Our Faculties</h1>
+        <p class="lead">Choose from 7 specialized faculties designed to transform leaders for global impact</p>
+    </div>
+</section>
+
+<!-- Academic Levels Info -->
+<section class="info-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">Academic Levels</h2>
+            <p class="text-muted">Each faculty offers three progressive academic levels</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4 class="mb-3">Masterclass</h4>
+                    <p class="text-muted mb-3">6-month intensive program</p>
+                    <ul class="list-unstyled text-start">
+                        <li><i class="fas fa-check text-success me-2"></i>Foundational knowledge</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Core competencies</li>
+                        <li><i class="fas fa-check text-success me-2"></i>12-18 credits</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Certificate of completion</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4 class="mb-3">Diploma</h4>
+                    <p class="text-muted mb-3">12-month comprehensive program</p>
+                    <ul class="list-unstyled text-start">
+                        <li><i class="fas fa-check text-success me-2"></i>Advanced curriculum</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Practical applications</li>
+                        <li><i class="fas fa-check text-success me-2"></i>24-30 credits</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Diploma certificate</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4 class="mb-3">Higher Diploma</h4>
+                    <p class="text-muted mb-3">12-month specialized program</p>
+                    <ul class="list-unstyled text-start">
+                        <li><i class="fas fa-check text-success me-2"></i>Expert-level content</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Research projects</li>
+                        <li><i class="fas fa-check text-success me-2"></i>30-36 credits</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Higher Diploma certificate</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Faculties Grid -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">7 Core Faculties</h2>
+            <p class="text-muted">Discover your path to transformational leadership</p>
+        </div>
+        
+        <div class="faculty-grid">
+            <!-- Faculty 1: Church & Theological Education -->
+            <div class="faculty-card">
+                <div class="faculty-header">
+                    <div class="faculty-icon">
+                        <i class="fas fa-church"></i>
+                    </div>
+                    <h3 class="faculty-title">Church & Theological Education</h3>
+                    <p class="faculty-subtitle">and Transformation</p>
+                </div>
+                <div class="faculty-body">
+                    <p class="faculty-description">
+                        Deepen your theological understanding and develop transformational church leadership skills 
+                        rooted in biblical principles and contemporary ministry practices.
+                    </p>
+                    
+                    <div class="academic-levels">
+                        <span class="level-badge masterclass">🔹 Masterclass (6 months)</span>
+                        <span class="level-badge diploma">🔹 Diploma (12 months)</span>
+                        <span class="level-badge higher-diploma">🔹 Higher Diploma (12 months)</span>
+                    </div>
+                    
+                    <div class="faculty-actions">
+                        <a href="{% url 'faculties:faculty_detail' 1 %}" class="btn btn-primary btn-faculty">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        <a href="{% url 'faculties:apply_to_faculty' 1 %}" class="btn btn-outline-primary btn-faculty">
+                            <i class="fas fa-paper-plane me-2"></i>Apply Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Faculty 2: Missional Leadership -->
+            <div class="faculty-card">
+                <div class="faculty-header">
+                    <div class="faculty-icon">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <h3 class="faculty-title">Missional Leadership</h3>
+                    <p class="faculty-subtitle">Leading with Purpose</p>
+                </div>
+                <div class="faculty-body">
+                    <p class="faculty-description">
+                        Develop missional leadership competencies that integrate faith, purpose, and strategic 
+                        thinking for effective ministry and organizational transformation.
+                    </p>
+                    
+                    <div class="academic-levels">
+                        <span class="level-badge masterclass">🔹 Masterclass (6 months)</span>
+                        <span class="level-badge diploma">🔹 Diploma (12 months)</span>
+                        <span class="level-badge higher-diploma">🔹 Higher Diploma (12 months)</span>
+                    </div>
+                    
+                    <div class="faculty-actions">
+                        <a href="{% url 'faculties:faculty_detail' 2 %}" class="btn btn-primary btn-faculty">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        <a href="{% url 'faculties:apply_to_faculty' 2 %}" class="btn btn-outline-primary btn-faculty">
+                            <i class="fas fa-paper-plane me-2"></i>Apply Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Faculty 3: SDGs & Community Transformation -->
+            <div class="faculty-card">
+                <div class="faculty-header">
+                    <div class="faculty-icon">
+                        <i class="fas fa-globe-africa"></i>
+                    </div>
+                    <h3 class="faculty-title">SDGs & Community</h3>
+                    <p class="faculty-subtitle">Transformation</p>
+                </div>
+                <div class="faculty-body">
+                    <p class="faculty-description">
+                        Master the UN Sustainable Development Goals framework and learn to drive meaningful 
+                        community transformation through evidence-based interventions.
+                    </p>
+                    
+                    <div class="academic-levels">
+                        <span class="level-badge masterclass">🔹 Masterclass (6 months)</span>
+                        <span class="level-badge diploma">🔹 Diploma (12 months)</span>
+                        <span class="level-badge higher-diploma">🔹 Higher Diploma (12 months)</span>
+                    </div>
+                    
+                    <div class="faculty-actions">
+                        <a href="{% url 'faculties:faculty_detail' 3 %}" class="btn btn-primary btn-faculty">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        <a href="{% url 'faculties:apply_to_faculty' 3 %}" class="btn btn-outline-primary btn-faculty">
+                            <i class="fas fa-paper-plane me-2"></i>Apply Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Faculty 4: Education for Sustainable Development -->
+            <div class="faculty-card">
+                <div class="faculty-header">
+                    <div class="faculty-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3 class="faculty-title">Education for Sustainable</h3>
+                    <p class="faculty-subtitle">Development & Global Citizenship</p>
+                </div>
+                <div class="faculty-body">
+                    <p class="faculty-description">
+                        Become an educator and advocate for sustainable development, fostering global citizenship 
+                        and environmental stewardship in diverse learning environments.
+                    </p>
+                    
+                    <div class="academic-levels">
+                        <span class="level-badge masterclass">🔹 Masterclass (6 months)</span>
+                        <span class="level-badge diploma">🔹 Diploma (12 months)</span>
+                        <span class="level-badge higher-diploma">🔹 Higher Diploma (12 months)</span>
+                    </div>
+                    
+                    <div class="faculty-actions">
+                        <a href="{% url 'faculties:faculty_detail' 4 %}" class="btn btn-primary btn-faculty">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        <a href="{% url 'faculties:apply_to_faculty' 4 %}" class="btn btn-outline-primary btn-faculty">
+                            <i class="fas fa-paper-plane me-2"></i>Apply Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Faculty 5: Global Leadership & Diplomacy -->
+            <div class="faculty-card">
+                <div class="faculty-header">
+                    <div class="faculty-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="faculty-title">Global Leadership</h3>
+                    <p class="faculty-subtitle">& Diplomacy</p>
+                </div>
+                <div class="faculty-body">
+                    <p class="faculty-description">
+                        Develop diplomatic skills and global leadership competencies for international relations, 
+                        cross-cultural communication, and peaceful conflict resolution.
+                    </p>
+                    
+                    <div class="academic-levels">
+                        <span class="level-badge masterclass">🔹 Masterclass (6 months)</span>
+                        <span class="level-badge diploma">🔹 Diploma (12 months)</span>
+                        <span class="level-badge higher-diploma">🔹 Higher Diploma (12 months)</span>
+                    </div>
+                    
+                    <div class="faculty-actions">
+                        <a href="{% url 'faculties:faculty_detail' 5 %}" class="btn btn-primary btn-faculty">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        <a href="{% url 'faculties:apply_to_faculty' 5 %}" class="btn btn-outline-primary btn-faculty">
+                            <i class="fas fa-paper-plane me-2"></i>Apply Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Faculty 6: Entrepreneurship & Political Economics -->
+            <div class="faculty-card">
+                <div class="faculty-header">
+                    <div class="faculty-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="faculty-title">Entrepreneurship</h3>
+                    <p class="faculty-subtitle">& Political Economics</p>
+                </div>
+                <div class="faculty-body">
+                    <p class="faculty-description">
+                        Launch and scale social enterprises while understanding political economy dynamics 
+                        that shape business environments and policy frameworks.
+                    </p>
+                    
+                    <div class="academic-levels">
+                        <span class="level-badge masterclass">🔹 Masterclass (6 months)</span>
+                        <span class="level-badge diploma">🔹 Diploma (12 months)</span>
+                        <span class="level-badge higher-diploma">🔹 Higher Diploma (12 months)</span>
+                    </div>
+                    
+                    <div class="faculty-actions">
+                        <a href="{% url 'faculties:faculty_detail' 6 %}" class="btn btn-primary btn-faculty">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        <a href="{% url 'faculties:apply_to_faculty' 6 %}" class="btn btn-outline-primary btn-faculty">
+                            <i class="fas fa-paper-plane me-2"></i>Apply Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Faculty 7: Climate Warriors -->
+            <div class="faculty-card">
+                <div class="faculty-header">
+                    <div class="faculty-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="faculty-title">Climate Warriors</h3>
+                    <p class="faculty-subtitle">Environmental Leadership & Action</p>
+                </div>
+                <div class="faculty-body">
+                    <p class="faculty-description">
+                        Become a climate action leader with expertise in environmental science, policy advocacy, 
+                        and sustainable solutions for climate change mitigation and adaptation.
+                    </p>
+                    
+                    <div class="academic-levels">
+                        <span class="level-badge masterclass">🔹 Masterclass (6 months)</span>
+                        <span class="level-badge diploma">🔹 Diploma (12 months)</span>
+                        <span class="level-badge higher-diploma">🔹 Higher Diploma (12 months)</span>
+                    </div>
+                    
+                    <div class="faculty-actions">
+                        <a href="{% url 'faculties:faculty_detail' 7 %}" class="btn btn-primary btn-faculty">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        <a href="{% url 'faculties:apply_to_faculty' 7 %}" class="btn btn-outline-primary btn-faculty">
+                            <i class="fas fa-paper-plane me-2"></i>Apply Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="section-padding" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+    <div class="container text-center">
+        <h2 class="mb-3">Ready to Begin Your Transformation?</h2>
+        <p class="lead mb-4">Choose your faculty and academic level to start your leadership journey today.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'core:register' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Create Account
+            </a>
+            <a href="{% url 'support:contact' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-question-circle me-2"></i>Need Help?
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add animation on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.faculty-card');
+        
+        const animateCards = () => {
+            cards.forEach((card, index) => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        };
+        
+        // Initial setup
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+        });
+        
+        window.addEventListener('scroll', animateCards);
+        animateCards(); // Run once on load
+    });
+</script>
+{% endblock %}
+

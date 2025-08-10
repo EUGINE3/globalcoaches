@@ -1,0 +1,473 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Submit Assignment - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .assignment-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 80px 0 40px;
+    }
+    
+    .assignment-info {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .submission-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .upload-zone {
+        border: 3px dashed var(--border-color);
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        text-align: center;
+        background: var(--bg-light);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .upload-zone:hover {
+        border-color: var(--primary-color);
+        background: rgba(37, 99, 235, 0.05);
+    }
+    
+    .upload-zone.dragover {
+        border-color: var(--primary-color);
+        background: rgba(37, 99, 235, 0.1);
+        transform: scale(1.02);
+    }
+    
+    .upload-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .file-input {
+        display: none;
+    }
+    
+    .file-preview {
+        background: white;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+        display: none;
+    }
+    
+    .file-preview.show {
+        display: block;
+    }
+    
+    .file-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .file-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .text-editor {
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        min-height: 200px;
+        padding: 1rem;
+        font-family: inherit;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: vertical;
+    }
+    
+    .text-editor:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+    
+    .submission-type-tabs {
+        display: flex;
+        background: var(--bg-light);
+        border-radius: 12px;
+        padding: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .tab-button {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        color: var(--text-light);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .tab-button.active {
+        background: white;
+        color: var(--primary-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .requirements-list {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .requirements-list h6 {
+        color: #92400e;
+        margin-bottom: 1rem;
+    }
+    
+    .requirements-list ul {
+        margin: 0;
+        color: #92400e;
+    }
+    
+    .submission-status {
+        background: #d1fae5;
+        border: 1px solid #10b981;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: none;
+    }
+    
+    .submission-status.show {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Assignment Header -->
+<section class="assignment-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="assignment-info">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="badge bg-light text-dark px-3 py-2">GCA-M101</span>
+                        <span class="badge bg-warning px-3 py-2">100 Points</span>
+                        <span class="badge bg-danger px-3 py-2">Due: March 15, 2024</span>
+                    </div>
+                    <h1 class="mb-3">Personal Leadership Assessment</h1>
+                    <p class="lead mb-0">
+                        Complete a comprehensive self-assessment of your current leadership style 
+                        and identify three areas for development.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Submission Form -->
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Assignment Requirements -->
+                <div class="requirements-list">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Assignment Requirements</h6>
+                    <ul>
+                        <li>Submit a 500-word reflection paper</li>
+                        <li>Use APA format for citations</li>
+                        <li>Include at least 2 scholarly references</li>
+                        <li>File formats accepted: PDF, DOC, DOCX</li>
+                        <li>Maximum file size: 10MB</li>
+                    </ul>
+                </div>
+                
+                <!-- Submission Success Message -->
+                <div class="submission-status" id="submissionStatus">
+                    <h6 class="text-success"><i class="fas fa-check-circle me-2"></i>Assignment Submitted Successfully!</h6>
+                    <p class="mb-0">Your assignment has been submitted and is pending review. You will receive feedback within 5-7 business days.</p>
+                </div>
+                
+                <!-- Submission Form -->
+                <div class="submission-card">
+                    <h4 class="text-gradient mb-4">Submit Your Assignment</h4>
+                    
+                    <!-- Submission Type Tabs -->
+                    <div class="submission-type-tabs">
+                        <button class="tab-button active" onclick="switchTab('file')">
+                            <i class="fas fa-file-upload me-2"></i>File Upload
+                        </button>
+                        <button class="tab-button" onclick="switchTab('text')">
+                            <i class="fas fa-keyboard me-2"></i>Text Submission
+                        </button>
+                    </div>
+                    
+                    <form id="assignmentForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- File Upload Tab -->
+                        <div id="fileTab" class="tab-content active">
+                            <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h5 class="mb-2">Drop your file here or click to browse</h5>
+                                <p class="text-muted mb-0">Supported formats: PDF, DOC, DOCX (Max 10MB)</p>
+                            </div>
+                            
+                            <input type="file" id="fileInput" class="file-input" accept=".pdf,.doc,.docx" onchange="handleFileSelect(this)">
+                            
+                            <div id="filePreview" class="file-preview">
+                                <div class="file-info">
+                                    <div class="file-icon">
+                                        <i class="fas fa-file"></i>
+                                    </div>
+                                    <div>
+                                        <div class="file-name font-weight-bold"></div>
+                                        <div class="file-size text-muted"></div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger ms-auto" onclick="removeFile()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Text Submission Tab -->
+                        <div id="textTab" class="tab-content">
+                            <label for="textSubmission" class="form-label">
+                                <strong>Assignment Text</strong>
+                            </label>
+                            <textarea id="textSubmission" name="text_submission" class="text-editor" 
+                                      placeholder="Type or paste your assignment text here..."></textarea>
+                            <div class="form-text">
+                                <span id="wordCount">0</span> words
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Comments -->
+                        <div class="mt-4">
+                            <label for="comments" class="form-label">
+                                <strong>Additional Comments (Optional)</strong>
+                            </label>
+                            <textarea id="comments" name="comments" class="form-control" rows="3" 
+                                      placeholder="Any additional comments or notes for your instructor..."></textarea>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Assignment
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-lg" onclick="saveDraft()">
+                                <i class="fas fa-save me-2"></i>Save Draft
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="submission-card">
+                    <h5 class="text-gradient mb-4">Assignment Details</h5>
+                    
+                    <div class="mb-3">
+                        <strong>Course:</strong><br>
+                        <span class="text-muted">GCA-M101 - Foundations of Leadership</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Due Date:</strong><br>
+                        <span class="text-muted">March 15, 2024 at 11:59 PM</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Points:</strong><br>
+                        <span class="text-muted">100 points</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Submission Attempts:</strong><br>
+                        <span class="text-muted">Unlimited until due date</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6 class="mb-3">Quick Actions</h6>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'courses:module_detail' module_id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Module
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="downloadTemplate()">
+                            <i class="fas fa-download me-2"></i>Download Template
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="submission-card">
+                    <h6 class="mb-3">Submission Tips</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            Review the rubric before submitting
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-spell-check text-info me-2"></i>
+                            Proofread your work carefully
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-clock text-success me-2"></i>
+                            Submit early to avoid technical issues
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-question-circle text-primary me-2"></i>
+                            Contact your mentor if you need help
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="submission-card">
+                    <h6 class="mb-3">Need Help?</h6>
+                    <p class="mb-3">Having trouble with your submission?</p>
+                    <a href="{% url 'support:support_center' %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-life-ring me-2"></i>Get Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab switching functionality
+    function switchTab(tabName) {
+        // Remove active class from all tabs and buttons
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // Add active class to selected tab and button
+        document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        document.getElementById(tabName + 'Tab').classList.add('active');
+    }
+    
+    // File upload functionality
+    function handleFileSelect(input) {
+        const file = input.files[0];
+        if (file) {
+            const preview = document.getElementById('filePreview');
+            const fileName = preview.querySelector('.file-name');
+            const fileSize = preview.querySelector('.file-size');
+            
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            preview.classList.add('show');
+        }
+    }
+    
+    function removeFile() {
+        document.getElementById('fileInput').value = '';
+        document.getElementById('filePreview').classList.remove('show');
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    // Word count functionality
+    document.getElementById('textSubmission').addEventListener('input', function() {
+        const text = this.value;
+        const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        document.getElementById('wordCount').textContent = wordCount;
+    });
+    
+    // Drag and drop functionality
+    const uploadZone = document.querySelector('.upload-zone');
+    
+    uploadZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+    
+    uploadZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+    
+    uploadZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            document.getElementById('fileInput').files = files;
+            handleFileSelect(document.getElementById('fileInput'));
+        }
+    });
+    
+    // Form submission
+    document.getElementById('assignmentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Simulate submission
+        setTimeout(() => {
+            document.getElementById('submissionStatus').classList.add('show');
+            this.style.display = 'none';
+            
+            // Scroll to success message
+            document.getElementById('submissionStatus').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }, 1000);
+    });
+    
+    // Save draft functionality
+    function saveDraft() {
+        // Simulate saving draft
+        alert('Draft saved successfully!');
+    }
+    
+    // Download template functionality
+    function downloadTemplate() {
+        // Simulate template download
+        alert('Assignment template downloaded!');
+    }
+</script>
+{% endblock %}
+

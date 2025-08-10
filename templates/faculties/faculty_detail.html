@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Faculty Details - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .faculty-hero {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 100px 0 60px;
+        text-align: center;
+    }
+    
+    .faculty-content {
+        padding: 80px 0;
+    }
+    
+    .program-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .program-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .level-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .level-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .masterclass-icon {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    .diploma-icon {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    .higher-diploma-icon {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+    
+    .module-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .module-item {
+        background: var(--bg-light);
+        border-radius: 12px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+    }
+    
+    .module-item:hover {
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transform: translateX(5px);
+    }
+    
+    .module-code {
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+    }
+    
+    .module-name {
+        font-weight: 600;
+        margin: 0.5rem 0;
+        color: var(--text-dark);
+    }
+    
+    .module-credits {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Faculty Hero -->
+<section class="faculty-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <i class="fas fa-university fa-4x mb-4"></i>
+                <h1 class="display-4 mb-3">Faculty Details</h1>
+                <p class="lead">Explore the comprehensive program structure and curriculum</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Faculty Content -->
+<section class="faculty-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Masterclass Program -->
+                <div class="program-card">
+                    <div class="level-header">
+                        <div class="level-icon masterclass-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div>
+                            <h3>Masterclass Program</h3>
+                            <p class="text-muted mb-0">6-month intensive program • 12-18 credits</p>
+                        </div>
+                    </div>
+                    
+                    <p class="mb-3">
+                        Build foundational knowledge and core competencies in your chosen field. 
+                        This intensive 6-month program provides essential skills and understanding.
+                    </p>
+                    
+                    <h5>Sample Modules:</h5>
+                    <div class="module-list">
+                        <div class="module-item">
+                            <div class="module-code">GCA-M101</div>
+                            <div class="module-name">Foundations of Leadership</div>
+                            <div class="module-credits">3 credits • Month 1</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-M102</div>
+                            <div class="module-name">Transformational Principles</div>
+                            <div class="module-credits">3 credits • Month 2</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-M103</div>
+                            <div class="module-name">Community Engagement</div>
+                            <div class="module-credits">2 credits • Month 3</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-M104</div>
+                            <div class="module-name">Global Perspectives</div>
+                            <div class="module-credits">3 credits • Month 4</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Diploma Program -->
+                <div class="program-card">
+                    <div class="level-header">
+                        <div class="level-icon diploma-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h3>Diploma Program</h3>
+                            <p class="text-muted mb-0">12-month comprehensive program • 24-30 credits</p>
+                        </div>
+                    </div>
+                    
+                    <p class="mb-3">
+                        Advance your knowledge with comprehensive curriculum and practical applications. 
+                        This 12-month program builds on foundational concepts with deeper exploration.
+                    </p>
+                    
+                    <h5>Sample Modules:</h5>
+                    <div class="module-list">
+                        <div class="module-item">
+                            <div class="module-code">GCA-D201</div>
+                            <div class="module-name">Advanced Leadership Theory</div>
+                            <div class="module-credits">3 credits • Month 1</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-D202</div>
+                            <div class="module-name">Strategic Planning</div>
+                            <div class="module-credits">3 credits • Month 2</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-D203</div>
+                            <div class="module-name">Project Management</div>
+                            <div class="module-credits">2 credits • Month 3</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-D204</div>
+                            <div class="module-name">Impact Assessment</div>
+                            <div class="module-credits">3 credits • Month 4</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Higher Diploma Program -->
+                <div class="program-card">
+                    <div class="level-header">
+                        <div class="level-icon higher-diploma-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div>
+                            <h3>Higher Diploma Program</h3>
+                            <p class="text-muted mb-0">12-month specialized program • 30-36 credits</p>
+                        </div>
+                    </div>
+                    
+                    <p class="mb-3">
+                        Master expert-level content with research projects and specialized applications. 
+                        This advanced 12-month program prepares you for leadership excellence.
+                    </p>
+                    
+                    <h5>Sample Modules:</h5>
+                    <div class="module-list">
+                        <div class="module-item">
+                            <div class="module-code">GCA-H301</div>
+                            <div class="module-name">Research Methodology</div>
+                            <div class="module-credits">3 credits • Month 1</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-H302</div>
+                            <div class="module-name">Advanced Case Studies</div>
+                            <div class="module-credits">3 credits • Month 2</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-H303</div>
+                            <div class="module-name">Capstone Project</div>
+                            <div class="module-credits">4 credits • Month 3</div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-code">GCA-H304</div>
+                            <div class="module-name">Global Impact Strategy</div>
+                            <div class="module-credits">3 credits • Month 4</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="program-card">
+                    <h4 class="text-gradient mb-4">Apply Now</h4>
+                    <p class="mb-4">Ready to begin your transformational journey? Choose your academic level and start your application.</p>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'faculties:apply_to_faculty' faculty_id %}" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Start Application
+                        </a>
+                        <a href="{% url 'faculties:faculty_overview' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Faculties
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="program-card">
+                    <h5 class="mb-3">Program Features</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Expert mentorship</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Practical assignments</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Peer collaboration</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Global community</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Certificate upon completion</li>
+                    </ul>
+                </div>
+                
+                <div class="program-card">
+                    <h5 class="mb-3">Need Help?</h5>
+                    <p class="mb-3">Have questions about our programs? We're here to help!</p>
+                    <a href="{% url 'support:contact' %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-phone me-2"></i>Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
