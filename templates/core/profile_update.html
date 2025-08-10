@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Update Profile - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--bg-light), #ffffff);
+        padding: 2rem 0;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .profile-body {
+        padding: 2rem;
+    }
+    
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid var(--border-color);
+        padding: 12px 16px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+    
+    .btn-profile {
+        padding: 12px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        width: 100%;
+    }
+    
+    .form-text {
+        font-size: 0.875rem;
+        color: var(--text-light);
+    }
+    
+    .profile-picture-preview {
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <i class="fas fa-user-edit fa-3x mb-3"></i>
+                <h2>Update Your Profile</h2>
+                <p class="mb-0">Keep your information current and complete</p>
+            </div>
+            
+            <div class="profile-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number</label>
+                                {{ form.phone_number }}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.country.id_for_label }}" class="form-label">Country</label>
+                                {{ form.country }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.town.id_for_label }}" class="form-label">Town/City</label>
+                                {{ form.town }}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.institution.id_for_label }}" class="form-label">Institution/Organization</label>
+                                {{ form.institution }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.bio.id_for_label }}" class="form-label">Bio</label>
+                        {{ form.bio }}
+                        <div class="form-text">Tell us about yourself, your experience, and what you hope to achieve.</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Date of Birth</label>
+                                {{ form.date_of_birth }}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Profile Picture</label>
+                                {{ form.profile_picture }}
+                                {% if form.instance.profile_picture %}
+                                <div class="mt-2">
+                                    <img src="{{ form.instance.profile_picture.url }}" alt="Current profile picture" class="profile-picture-preview">
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-primary btn-profile flex-grow-1">
+                            <i class="fas fa-save me-2"></i>Update Profile
+                        </button>
+                        <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

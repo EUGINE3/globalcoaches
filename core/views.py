@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, UserProfileUpdateForm
+from .models import UserProfile
 
 def landing_page(request):
     """Landing page with hero section and call to action"""
@@ -48,4 +49,23 @@ def register(request):
 def dashboard(request):
     """Student dashboard view"""
     return render(request, 'core/dashboard.html')
+
+@login_required
+def profile_update(request):
+    """Update user profile view"""
+    try:
+        profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=request.user)
+    
+    if request.method == 'POST':
+        form = UserProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('core:dashboard')
+    else:
+        form = UserProfileUpdateForm(instance=profile)
+    
+    return render(request, 'core/profile_update.html', {'form': form})
 

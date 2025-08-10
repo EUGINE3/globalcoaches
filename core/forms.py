@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import UserProfile, COUNTRY_CHOICES, COUNTRY_CHOICES
 
 class CustomUserCreationForm(UserCreationForm):
     """Custom registration form with additional fields"""
@@ -28,12 +28,12 @@ class CustomUserCreationForm(UserCreationForm):
             'placeholder': 'Enter your email address'
         })
     )
-    country = forms.CharField(
-        max_length=100,
+    country = forms.ChoiceField(
+        choices=COUNTRY_CHOICES,
         required=True,
-        widget=forms.TextInput(attrs={
+        widget=forms.Select(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your country'
+            'placeholder': 'Select your country'
         })
     )
     institution = forms.CharField(
@@ -86,3 +86,44 @@ class CustomUserCreationForm(UserCreationForm):
                 institution=self.cleaned_data['institution']
             )
         return user 
+
+class UserProfileUpdateForm(forms.ModelForm):
+    """Form for updating user profile information"""
+    country = forms.ChoiceField(
+        choices=COUNTRY_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': 'Select your country'
+        })
+    )
+    
+    class Meta:
+        model = UserProfile
+        fields = ['phone_number', 'country', 'town', 'institution', 'bio', 'profile_picture', 'date_of_birth']
+        widgets = {
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your phone number'
+            }),
+            'town': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your town/city'
+            }),
+            'institution': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your institution/organization'
+            }),
+            'bio': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Tell us about yourself...'
+            }),
+            'profile_picture': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
+            'date_of_birth': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+        } 
