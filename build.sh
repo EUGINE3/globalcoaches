@@ -7,11 +7,11 @@ apt-get update && apt-get install -y gcc libffi-dev tzdata
 pip install -r requirements.txt
 
 # Collect static files
-cd global_coaches_academy && python manage.py collectstatic --no-input
+python manage.py collectstatic --no-input
 
 
 # Run migrations
-cd global_coaches_academy && python manage.py migrate
+python manage.py migrate
 
 
 
