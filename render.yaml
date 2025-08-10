@@ -4,7 +4,7 @@ services:
     plan: free
     env: python
     buildCommand: "./build.sh"
-    startCommand: "cd global_coaches_academy && gunicorn global_coaches_academy.wsgi:application"
+    startCommand: "gunicorn global_coaches_academy.wsgi:application"
     envVars:
       - key: PYTHON_VERSION
         value:  3.8.10
