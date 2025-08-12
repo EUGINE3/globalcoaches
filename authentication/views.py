@@ -155,7 +155,7 @@ def logout_view(request):
     """User logout"""
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
-    return redirect('core:home')
+    return redirect('core:landing_page')
 
 
 def verify_email(request, token):
