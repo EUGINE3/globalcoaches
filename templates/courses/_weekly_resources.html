@@ -1,0 +1,259 @@
+{% load static %}
+
+<!-- Weekly Resources Partial Template -->
+{% if resources %}
+<div class="content-section">
+    <h5><i class="fas fa-video"></i>Learning Resources</h5>
+    <div class="resources-list">
+        {% for resource in resources %}
+        <div class="resource-item mb-3 p-3 border rounded">
+            <div class="d-flex align-items-start gap-3">
+                <!-- Resource Icon -->
+                <div class="resource-icon">
+                    {% if resource.is_video %}
+                    <i class="fas fa-play-circle text-primary" style="font-size: 1.5rem;"></i>
+                    {% elif resource.is_pdf %}
+                    <i class="fas fa-file-pdf text-danger" style="font-size: 1.5rem;"></i>
+                    {% elif resource.resource_type == 'document' %}
+                    <i class="fas fa-file-alt text-info" style="font-size: 1.5rem;"></i>
+                    {% elif resource.resource_type == 'link' %}
+                    <i class="fas fa-external-link-alt text-success" style="font-size: 1.5rem;"></i>
+                    {% else %}
+                    <i class="fas fa-file text-secondary" style="font-size: 1.5rem;"></i>
+                    {% endif %}
+                </div>
+
+                <!-- Resource Content -->
+                <div class="resource-content flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <h6 class="resource-title mb-0">{{ resource.title }}</h6>
+                        {% if resource.is_required %}
+                        <span class="badge bg-warning text-dark">Required</span>
+                        {% endif %}
+                    </div>
+
+                    {% if resource.description %}
+                    <p class="resource-description text-muted mb-2">{{ resource.description }}</p>
+                    {% endif %}
+
+                    <!-- Resource Metadata -->
+                    <div class="resource-meta d-flex align-items-center gap-3 text-sm text-muted">
+                        {% if resource.file_size %}
+                        <span><i class="fas fa-hdd me-1"></i>{{ resource.get_file_size_display }}</span>
+                        {% endif %}
+                        {% if resource.duration %}
+                        <span><i class="fas fa-clock me-1"></i>{{ resource.duration }}</span>
+                        {% endif %}
+                        <span class="text-capitalize">{{ resource.get_resource_type_display }}</span>
+                    </div>
+                </div>
+
+                <!-- Resource Actions -->
+                <div class="resource-actions">
+                    {% if resource.view_progress.completed %}
+                    <span class="btn btn-success btn-sm disabled">
+                        <i class="fas fa-check me-1"></i>Completed
+                    </span>
+                    {% else %}
+                    {% if resource.file %}
+                    {% if resource.is_video %}
+                    <button class="btn btn-primary btn-sm"
+                        onclick="playVideo('{{ resource.file.url }}', '{{ resource.title }}', {{ resource.id }})">
+                        <i class="fas fa-play me-1"></i>Play
+                    </button>
+                    {% else %}
+                    <a href="{{ resource.file.url }}" target="_blank" class="btn btn-outline-primary btn-sm"
+                        onclick="markResourceViewed({{ resource.id }})">
+                        <i class="fas fa-download me-1"></i>Download
+                    </a>
+                    {% endif %}
+                    {% elif resource.external_url %}
+                    <a href="{{ resource.external_url }}" target="_blank" class="btn btn-outline-primary btn-sm"
+                        onclick="markResourceViewed({{ resource.id }})">
+                        <i class="fas fa-external-link-alt me-1"></i>Open
+                    </a>
+                    {% endif %}
+
+                    {% if not resource.view_progress.completed %}
+                    <button class="btn btn-outline-success btn-sm ms-1"
+                        onclick="markResourceCompleted({{ resource.id }})" title="Mark as completed">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    {% endif %}
+                    {% endif %}
+
+                    {% if resource.view_progress %}
+                    <small class="text-muted d-block mt-1">
+                        Viewed {{ resource.view_progress.view_count }} time{{
+                        resource.view_progress.view_count|pluralize }}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Video Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoModalLabel">Video Player</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <video id="modalVideo" class="w-100" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function playVideo(videoUrl, title, resourceId) {
+        const modal = new bootstrap.Modal(document.getElementById('videoModal'));
+        const video = document.getElementById('modalVideo');
+        const modalTitle = document.getElementById('videoModalLabel');
+
+        video.src = videoUrl;
+        modalTitle.textContent = title;
+        modal.show();
+
+        // Mark as viewed when video starts playing
+        video.addEventListener('play', function () {
+            markResourceViewed(resourceId);
+        }, { once: true });
+
+        // Pause video when modal is closed
+        document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
+            video.pause();
+            video.currentTime = 0;
+        });
+    }
+
+    function markResourceViewed(resourceId) {
+        fetch(`/courses/api/resource/${resourceId}/viewed/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Resource marked as viewed');
+                }
+            })
+            .catch(error => {
+                console.error('Error marking resource as viewed:', error);
+            });
+    }
+
+    function markResourceCompleted(resourceId) {
+        fetch(`/courses/api/resource/${resourceId}/completed/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Resource marked as completed');
+                    if (data.week_completed) {
+                        showSuccessMessage('Week completed! Next week unlocked.');
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        location.reload();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error marking resource as completed:', error);
+            });
+    }
+
+    function showSuccessMessage(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alertDiv.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        setTimeout(() => alertDiv.remove(), 5000);
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<style>
+    .resource-item {
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    .resource-item:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .resource-icon {
+        min-width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .resource-title {
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .resource-description {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .resource-meta {
+        font-size: 0.8rem;
+    }
+
+    .resource-actions .btn {
+        font-size: 0.85rem;
+    }
+
+    #modalVideo {
+        max-height: 70vh;
+    }
+</style>
+
+{% else %}
+<div class="content-section">
+    <h5><i class="fas fa-video"></i>Learning Resources</h5>
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        No learning resources have been added for this week yet. Check back later!
+    </div>
+</div>
+{% endif %}

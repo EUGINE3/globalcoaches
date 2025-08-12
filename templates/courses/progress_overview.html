@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Learning Progress - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .progress-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 60px 0 40px;
+    }
+    
+    .program-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .module-progress-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .module-progress-item.accessible {
+        border-color: var(--primary-color);
+        background: rgba(37, 99, 235, 0.05);
+    }
+    
+    .module-progress-item.completed {
+        border-color: var(--success-color);
+        background: rgba(34, 197, 94, 0.05);
+    }
+    
+    .module-progress-item.locked {
+        opacity: 0.6;
+        background: #f8f9fa;
+    }
+    
+    .module-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+    }
+    
+    .module-icon.completed {
+        background: var(--success-color);
+        color: white;
+    }
+    
+    .module-icon.accessible {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .module-icon.locked {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .next-action-card {
+        background: linear-gradient(135deg, var(--accent-color), #f59e0b);
+        color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .progress-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .stat-label {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Progress Header -->
+<section class="progress-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3">Learning Progress</h1>
+                <p class="lead mb-0">Track your journey through the Global Coaches Academy programs</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Progress Content -->
+<section class="section-padding">
+    <div class="container">
+        {% for program_data in progress_data %}
+        <div class="program-card">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h3>{{ program_data.enrollment.faculty_program.faculty.name }}</h3>
+                    <p class="text-muted mb-0">{{ program_data.enrollment.faculty_program.academic_level.name }}</p>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-primary">{{ program_data.enrollment.status|title }}</span>
+                </div>
+            </div>
+            
+            <!-- Next Action -->
+            {% if program_data.next_action %}
+            <div class="next-action-card">
+                <h5 class="mb-2">
+                    <i class="fas fa-bullseye me-2"></i>Next Step
+                </h5>
+                <p class="mb-0">{{ program_data.next_action.message }}</p>
+                {% if program_data.next_action.type == 'week_completion' %}
+                <div class="mt-3">
+                    <a href="{% url 'courses:module_detail' program_data.next_action.module.id %}" class="btn btn-light">
+                        <i class="fas fa-arrow-right me-2"></i>Continue Learning
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Progress Stats -->
+            <div class="progress-stats">
+                <div class="stat-card">
+                    <div class="stat-number">{{ program_data.modules|length }}</div>
+                    <div class="stat-label">Total Modules</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        {% with completed=program_data.modules|length %}
+                            {% for module_data in program_data.modules %}
+                                {% if module_data.progress.is_completed %}{{ forloop.counter0|add:1 }}{% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+                    <div class="stat-label">Completed Modules</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ program_data.enrollment.total_credits_earned }}</div>
+                    <div class="stat-label">Credits Earned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        {% if program_data.enrollment.faculty_program.academic_level.credits_required %}
+                            {{ program_data.enrollment.calculate_progress_percentage|floatformat:0 }}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </div>
+                    <div class="stat-label">Overall Progress</div>
+                </div>
+            </div>
+            
+            <!-- Module Progress -->
+            <h5 class="mb-3">Module Progress</h5>
+            <div class="module-list">
+                {% for module_data in program_data.modules %}
+                <div class="module-progress-item {% if module_data.progress.is_completed %}completed{% elif module_data.accessible %}accessible{% else %}locked{% endif %}">
+                    <div class="module-icon {% if module_data.progress.is_completed %}completed{% elif module_data.accessible %}accessible{% else %}locked{% endif %}">
+                        {% if module_data.progress.is_completed %}
+                            <i class="fas fa-check"></i>
+                        {% elif module_data.accessible %}
+                            <i class="fas fa-play"></i>
+                        {% else %}
+                            <i class="fas fa-lock"></i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">{{ module_data.module.name }}</h6>
+                        <p class="text-muted mb-0">{{ module_data.module.course_code }} • {{ module_data.module.credits }} Credits</p>
+                        {% if module_data.progress %}
+                        <small class="text-muted">{{ module_data.progress.completion_percentage|floatformat:0 }}% Complete</small>
+                        {% endif %}
+                    </div>
+                    <div class="module-actions">
+                        {% if module_data.accessible %}
+                            <a href="{% url 'courses:module_detail' module_data.module.id %}" class="btn btn-sm btn-outline-primary">
+                                {% if module_data.progress.is_completed %}
+                                    <i class="fas fa-eye me-1"></i>Review
+                                {% else %}
+                                    <i class="fas fa-play me-1"></i>Continue
+                                {% endif %}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">Locked</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-5">
+            <i class="fas fa-graduation-cap text-muted" style="font-size: 4rem;"></i>
+            <h3 class="mt-3">No Active Enrollments</h3>
+            <p class="text-muted">You're not currently enrolled in any programs.</p>
+            <a href="{% url 'faculties:faculty_overview' %}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i>Explore Programs
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

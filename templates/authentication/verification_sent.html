@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Email Verification Sent - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .verification-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .verification-card {
+        background: white;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+    }
+    
+    .verification-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #059669, #047857);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .verification-title {
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+    }
+    
+    .verification-text {
+        color: var(--text-light);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+    
+    .btn-secondary {
+        background: #6b7280;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        margin: 0.5rem;
+    }
+    
+    .btn-secondary:hover {
+        background: #4b5563;
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 8px;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        margin: 0.5rem;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+    }
+    
+    .help-text {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verification-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="verification-card">
+                    <div class="verification-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    
+                    <h2 class="verification-title">Check Your Email</h2>
+                    
+                    <p class="verification-text">
+                        We've sent a verification link to your email address. Please check your inbox 
+                        and click the verification link to activate your account.
+                    </p>
+                    
+                    <p class="verification-text">
+                        <strong>Didn't receive the email?</strong> Check your spam folder or click the 
+                        button below to resend the verification email.
+                    </p>
+                    
+                    <div class="verification-actions">
+                        <form method="post" action="{% url 'authentication:resend_verification' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Resend Email
+                            </button>
+                        </form>
+                        
+                        <a href="{% url 'authentication:login' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Login
+                        </a>
+                    </div>
+                    
+                    <div class="help-text">
+                        <p>
+                            <strong>Need help?</strong> If you continue to have problems, please 
+                            <a href="{% url 'support:support_center' %}">contact our support team</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

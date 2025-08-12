@@ -1,0 +1,28 @@
+{{ site_name }} - Welcome to Our Community!
+
+🎉 Welcome, {{ user.first_name }}!
+
+Your email has been verified and your account is now active.
+
+Thank you for joining {{ site_name }}! We're excited to have you as part of our community of leaders and change-makers.
+
+WHAT YOU CAN DO NOW:
+✓ Access your personalized dashboard
+✓ Explore our comprehensive course catalog
+✓ Connect with mentors and fellow students
+✓ Track your learning progress
+✓ Join our vibrant community discussions
+✓ Access exclusive resources and materials
+
+Ready to start your learning journey? Visit your dashboard:
+{{ dashboard_url }}
+
+If you have any questions or need assistance getting started, our support team is here to help. Don't hesitate to reach out!
+
+We look forward to supporting you on your journey to becoming an impactful leader.
+
+Best regards,
+The {{ site_name }} Team
+
+{{ site_url }}
+This is an automated email. Please do not reply to this message.

@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .auth-logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .form-control.is-invalid {
+        border-color: #dc2626;
+    }
+    
+    .form-control.is-valid {
+        border-color: #059669;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        padding: 0.875rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+    }
+    
+    .auth-links {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .validation-feedback {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .invalid-feedback {
+        color: #dc2626;
+    }
+    
+    .valid-feedback {
+        color: #059669;
+    }
+    
+    .password-strength {
+        margin-top: 0.5rem;
+    }
+    
+    .strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: #e2e8f0;
+        overflow: hidden;
+    }
+    
+    .strength-fill {
+        height: 100%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+    
+    .strength-weak { background: #dc2626; width: 25%; }
+    .strength-fair { background: #f59e0b; width: 50%; }
+    .strength-good { background: #10b981; width: 75%; }
+    .strength-strong { background: #059669; width: 100%; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="auth-logo">Global Coaches Academy</div>
+                        <h2>Create Your Account</h2>
+                        <p class="text-muted">Join our community of transformational leaders</p>
+                    </div>
+                    
+                    <form method="post" id="registerForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="first_name" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" 
+                                           value="{{ first_name }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="last_name" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" 
+                                           value="{{ last_name }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="username" class="form-label">Username *</label>
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   value="{{ username }}" required>
+                            <div class="validation-feedback" id="username-feedback"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ email }}" required>
+                            <div class="validation-feedback" id="email-feedback"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password1" class="form-label">Password *</label>
+                            <input type="password" class="form-control" id="password1" name="password1" required>
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strength-fill"></div>
+                                </div>
+                                <small class="text-muted" id="strength-text">Enter a password</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password2" class="form-label">Confirm Password *</label>
+                            <input type="password" class="form-control" id="password2" name="password2" required>
+                            <div class="validation-feedback" id="password-feedback"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </button>
+                    </form>
+                    
+                    <div class="auth-links">
+                        <p>Already have an account? <a href="{% url 'authentication:login' %}">Sign In</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const password1Input = document.getElementById('password1');
+    const password2Input = document.getElementById('password2');
+    
+    // Username validation
+    let usernameTimeout;
+    usernameInput.addEventListener('input', function() {
+        clearTimeout(usernameTimeout);
+        usernameTimeout = setTimeout(() => {
+            checkUsernameAvailability(this.value);
+        }, 500);
+    });
+    
+    // Email validation
+    let emailTimeout;
+    emailInput.addEventListener('input', function() {
+        clearTimeout(emailTimeout);
+        emailTimeout = setTimeout(() => {
+            checkEmailAvailability(this.value);
+        }, 500);
+    });
+    
+    // Password strength
+    password1Input.addEventListener('input', function() {
+        checkPasswordStrength(this.value);
+    });
+    
+    // Password confirmation
+    password2Input.addEventListener('input', function() {
+        checkPasswordMatch();
+    });
+    
+    function checkUsernameAvailability(username) {
+        if (username.length < 3) return;
+        
+        fetch('{% url "authentication:check_username" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'username=' + encodeURIComponent(username)
+        })
+        .then(response => response.json())
+        .then(data => {
+            const feedback = document.getElementById('username-feedback');
+            const input = document.getElementById('username');
+            
+            if (data.available) {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                feedback.className = 'validation-feedback valid-feedback';
+                feedback.textContent = data.message;
+            } else {
+                input.classList.remove('is-valid');
+                input.classList.add('is-invalid');
+                feedback.className = 'validation-feedback invalid-feedback';
+                feedback.textContent = data.message;
+            }
+        });
+    }
+    
+    function checkEmailAvailability(email) {
+        if (!email.includes('@')) return;
+        
+        fetch('{% url "authentication:check_email" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'email=' + encodeURIComponent(email)
+        })
+        .then(response => response.json())
+        .then(data => {
+            const feedback = document.getElementById('email-feedback');
+            const input = document.getElementById('email');
+            
+            if (data.available) {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                feedback.className = 'validation-feedback valid-feedback';
+                feedback.textContent = data.message;
+            } else {
+                input.classList.remove('is-valid');
+                input.classList.add('is-invalid');
+                feedback.className = 'validation-feedback invalid-feedback';
+                feedback.textContent = data.message;
+            }
+        });
+    }
+    
+    function checkPasswordStrength(password) {
+        const strengthFill = document.getElementById('strength-fill');
+        const strengthText = document.getElementById('strength-text');
+        
+        let score = 0;
+        let feedback = '';
+        
+        if (password.length >= 8) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+        
+        strengthFill.className = 'strength-fill';
+        
+        if (password.length === 0) {
+            strengthText.textContent = 'Enter a password';
+        } else if (score < 2) {
+            strengthFill.classList.add('strength-weak');
+            strengthText.textContent = 'Weak password';
+        } else if (score < 3) {
+            strengthFill.classList.add('strength-fair');
+            strengthText.textContent = 'Fair password';
+        } else if (score < 4) {
+            strengthFill.classList.add('strength-good');
+            strengthText.textContent = 'Good password';
+        } else {
+            strengthFill.classList.add('strength-strong');
+            strengthText.textContent = 'Strong password';
+        }
+    }
+    
+    function checkPasswordMatch() {
+        const password1 = password1Input.value;
+        const password2 = password2Input.value;
+        const feedback = document.getElementById('password-feedback');
+        const input = document.getElementById('password2');
+        
+        if (password2.length === 0) {
+            input.classList.remove('is-valid', 'is-invalid');
+            feedback.textContent = '';
+            return;
+        }
+        
+        if (password1 === password2) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            feedback.className = 'validation-feedback valid-feedback';
+            feedback.textContent = 'Passwords match';
+        } else {
+            input.classList.remove('is-valid');
+            input.classList.add('is-invalid');
+            feedback.className = 'validation-feedback invalid-feedback';
+            feedback.textContent = 'Passwords do not match';
+        }
+    }
+    
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}

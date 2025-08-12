@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to {{ site_name }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        .title {
+            color: #1f2937;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .dashboard-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .dashboard-button:hover {
+            background: linear-gradient(135deg, #047857, #065f46);
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .welcome-box {
+            background: #f0fdf4;
+            border: 1px solid #22c55e;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .features {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            margin: 10px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .feature-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #059669;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">{{ site_name }}</div>
+            <h1 class="title">Welcome to Our Community!</h1>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-box">
+                <h2 style="color: #059669; margin-top: 0;">🎉 Welcome, {{ user.first_name }}!</h2>
+                <p style="margin-bottom: 0;">Your email has been verified and your account is now active.</p>
+            </div>
+            
+            <p>Thank you for joining {{ site_name }}! We're excited to have you as part of our community of leaders and change-makers.</p>
+            
+            <div class="features">
+                <h3 style="margin-top: 0; color: #1f2937;">What you can do now:</h3>
+                <div class="feature-item">Access your personalized dashboard</div>
+                <div class="feature-item">Explore our comprehensive course catalog</div>
+                <div class="feature-item">Connect with mentors and fellow students</div>
+                <div class="feature-item">Track your learning progress</div>
+                <div class="feature-item">Join our vibrant community discussions</div>
+                <div class="feature-item">Access exclusive resources and materials</div>
+            </div>
+            
+            <p>Ready to start your learning journey? Click the button below to access your dashboard:</p>
+            
+            <div style="text-align: center;">
+                <a href="{{ dashboard_url }}" class="dashboard-button">Go to Dashboard</a>
+            </div>
+            
+            <p>If you have any questions or need assistance getting started, our support team is here to help. Don't hesitate to reach out!</p>
+            
+            <p>We look forward to supporting you on your journey to becoming an impactful leader.</p>
+        </div>
+        
+        <div class="footer">
+            <p>Best regards,<br>The {{ site_name }} Team</p>
+            <p>
+                <a href="{{ site_url }}">{{ site_url }}</a><br>
+                This is an automated email. Please do not reply to this message.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

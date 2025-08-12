@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'students',
     'mentorship',
     'support',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'authentication.middleware.RateLimitMiddleware',
+    'authentication.middleware.SecurityHeadersMiddleware',
 ]
 
 ROOT_URLCONF = 'global_coaches_academy.urls'
@@ -153,6 +157,29 @@ REST_FRAMEWORK = {
 }
 
 # Login/Logout URLs
-LOGIN_URL = '/login/'
+LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'your-email@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'your-app-password')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'Global Coaches Academy <noreply@globalcoachesacademy.com>')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+# Email verification settings
+EMAIL_VERIFICATION_REQUIRED = True
+EMAIL_VERIFICATION_TOKEN_EXPIRY = 24 * 60 * 60  # 24 hours in seconds
+PASSWORD_RESET_TOKEN_EXPIRY = 60 * 60  # 1 hour in seconds
+
+# Site configuration
+SITE_NAME = 'Global Coaches Academy'
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
+
+# For development, you can use console backend to see emails in terminal
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

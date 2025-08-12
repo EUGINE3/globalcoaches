@@ -10,6 +10,21 @@ def landing_page(request):
     """Landing page with hero section and call to action"""
     return render(request, 'core/landing_page.html')
 
+
+def redirect_to_auth_login(request):
+    """Redirect to new authentication login"""
+    return redirect('authentication:login')
+
+
+def redirect_to_auth_logout(request):
+    """Redirect to new authentication logout"""
+    return redirect('authentication:logout')
+
+
+def redirect_to_auth_register(request):
+    """Redirect to new authentication register"""
+    return redirect('authentication:register')
+
 def user_login(request):
     """User login view"""
     if request.method == 'POST':
