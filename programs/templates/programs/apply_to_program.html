@@ -1,0 +1,305 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Apply to {{ program_level.name }} - Global Coaches Academy{% endblock %} {% block extra_css %}
+<style>
+    .application-hero {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 100px 0 60px;
+        text-align: center;
+    }
+    
+    .application-form {
+        padding: 80px 0;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 2rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+    
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+    
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 10px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        color: white;
+    }
+    
+    .program-info {
+        background: var(--bg-light);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .program-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        margin: 0 auto 1rem;
+    }
+    
+    .requirement-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .requirement-item i {
+        color: var(--success-color);
+    }
+</style>
+{% endblock %} {% block content %}
+<!-- Application Hero -->
+<section class="application-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <i class="fas fa-paper-plane fa-4x mb-4"></i>
+                <h1 class="display-4 mb-3">Apply to {{ program_level.name }}</h1>
+                <p class="lead">Start your transformational leadership journey today</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Application Form -->
+<section class="application-form">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Program Information -->
+                <div class="program-info">
+                    <div class="program-icon">
+                        {% if program_level.level_type == 'certificate' %}
+                        <i class="fas fa-certificate"></i> {% elif program_level.level_type == 'diploma' %}
+                        <i class="fas fa-graduation-cap"></i> {% elif program_level.level_type == 'advanced_diploma' %}
+                        <i class="fas fa-trophy"></i> {% endif %}
+                    </div>
+                    <h3 class="text-center mb-3">{{ program_level.name }}</h3>
+                    <p class="text-center text-muted mb-4">{{ program_level.description }}</p>
+
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <h5>Duration</h5>
+                            <p class="text-muted">{{ program_level.duration_months }} months</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h5>Modules</h5>
+                            <p class="text-muted">7 Integrated Modules</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h5>Focus</h5>
+                            <p class="text-muted">{{ program_level.focus_areas }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Application Form -->
+                <div class="form-card">
+                    <h3 class="text-center mb-4">Application Form</h3>
+                    <p class="text-center text-muted mb-4">
+                        Please fill out the form below to apply for the {{ program_level.name }}. All fields marked with * are required.
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="personal_statement" class="form-label">
+                                Personal Statement *
+                            </label>
+                            <textarea class="form-control" id="personal_statement" name="personal_statement" rows="5" placeholder="Tell us about yourself, your background, and what motivates you to join the Global Coaches Program..." required>{{ request.POST.personal_statement|default:'' }}</textarea>
+                            <small class="form-text text-muted">
+                                Please provide a comprehensive personal statement (minimum 200 words).
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="goals_objectives" class="form-label">
+                                Goals and Objectives *
+                            </label>
+                            <textarea class="form-control" id="goals_objectives" name="goals_objectives" rows="4" placeholder="What are your specific goals for participating in this program? How do you plan to apply what you learn?" required>{{ request.POST.goals_objectives|default:'' }}</textarea>
+                            <small class="form-text text-muted">
+                                Describe your learning objectives and how you plan to use your training.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="previous_experience" class="form-label">
+                                Previous Experience
+                            </label>
+                            <textarea class="form-control" id="previous_experience" name="previous_experience" rows="4" placeholder="Describe any relevant experience in leadership, community work, ministry, or related fields...">{{ request.POST.previous_experience|default:'' }}</textarea>
+                            <small class="form-text text-muted">
+                                Share any relevant experience that would support your application (optional but
+                                recommended).
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="commitment" class="form-label">
+                                Commitment Statement *
+                            </label>
+                            <textarea class="form-control" id="commitment" name="commitment" rows="3" placeholder="Please confirm your commitment to completing the program and participating actively..." required>{{ request.POST.commitment|default:'' }}</textarea>
+                            <small class="form-text text-muted">
+                                Confirm your commitment to the program requirements and active participation.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms_agreement" name="terms_agreement" required>
+                                <label class="form-check-label" for="terms_agreement">
+                                    I agree to the <a href="#" target="_blank">Terms and Conditions</a> and <a href="#"
+                                        target="_blank">Privacy Policy</a> *
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="program_requirements" name="program_requirements" required>
+                                <label class="form-check-label" for="program_requirements">
+                                    I understand the program requirements and commit to active participation *
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-submit">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Application
+                            </button>
+                            <a href="{% url 'faculties:program_level_detail' program_level.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Program Details
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Requirements -->
+                <div class="form-card">
+                    <h4 class="mb-3">Program Requirements</h4>
+                    <div class="requirement-item">
+                        <i class="fas fa-check"></i>
+                        <span>Commitment to complete the full {{ program_level.duration_months }}-month program</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-check"></i>
+                        <span>Active participation in all modules and activities</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-check"></i>
+                        <span>Completion of assignments and projects</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-check"></i>
+                        <span>Engagement with the global community</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-check"></i>
+                        <span>Application of learning in real-world contexts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} {% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const form = document.querySelector('form');
+        const requiredFields = form.querySelectorAll('[required]');
+
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            // Check minimum word count for personal statement
+            const personalStatement = document.getElementById('personal_statement');
+            const wordCount = personalStatement.value.trim().split(/\s+/).length;
+            if (wordCount < 200) {
+                personalStatement.classList.add('is-invalid');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields and ensure your personal statement is at least 200 words.');
+            }
+        });
+
+        // Real-time validation
+        requiredFields.forEach(field => {
+            field.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

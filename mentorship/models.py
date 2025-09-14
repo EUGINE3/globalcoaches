@@ -84,25 +84,25 @@ class WeeklyCheckin(models.Model):
     def __str__(self):
         return f"{self.student.username} - Week ending {self.week_ending}"
 
-class PeerReview(models.Model):
-    """Peer reviews for assignments"""
-    assignment_submission = models.ForeignKey('courses.AssignmentSubmission', on_delete=models.CASCADE, related_name='peer_reviews')
-    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='peer_reviews_given')
-    content_quality = models.IntegerField(choices=[(i, i) for i in range(1, 6)], help_text="Rate content quality (1-5)")
-    creativity = models.IntegerField(choices=[(i, i) for i in range(1, 6)], help_text="Rate creativity (1-5)")
-    presentation = models.IntegerField(choices=[(i, i) for i in range(1, 6)], help_text="Rate presentation (1-5)")
-    feedback = models.TextField(help_text="Constructive feedback")
-    suggestions = models.TextField(blank=True, help_text="Suggestions for improvement")
-    submitted_at = models.DateTimeField(default=timezone.now)
-    is_anonymous = models.BooleanField(default=True)
+# class PeerReview(models.Model):
+#     """Peer reviews for assignments"""
+#     assignment_submission = models.ForeignKey('courses.AssignmentSubmission', on_delete=models.CASCADE, related_name='peer_reviews')
+#     reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='peer_reviews_given')
+#     content_quality = models.IntegerField(choices=[(i, i) for i in range(1, 6)], help_text="Rate content quality (1-5)")
+#     creativity = models.IntegerField(choices=[(i, i) for i in range(1, 6)], help_text="Rate creativity (1-5)")
+#     presentation = models.IntegerField(choices=[(i, i) for i in range(1, 6)], help_text="Rate presentation (1-5)")
+#     feedback = models.TextField(help_text="Constructive feedback")
+#     suggestions = models.TextField(blank=True, help_text="Suggestions for improvement")
+#     submitted_at = models.DateTimeField(default=timezone.now)
+#     is_anonymous = models.BooleanField(default=True)
 
-    class Meta:
-        unique_together = ['assignment_submission', 'reviewer']
+#     class Meta:
+#         unique_together = ['assignment_submission', 'reviewer']
 
-    def __str__(self):
-        return f"Peer review by {self.reviewer.username}"
+#     def __str__(self):
+#         return f"Peer review by {self.reviewer.username}"
 
-    @property
-    def average_rating(self):
-        return (self.content_quality + self.creativity + self.presentation) / 3
+#     @property
+#     def average_rating(self):
+#         return (self.content_quality + self.creativity + self.presentation) / 3
 

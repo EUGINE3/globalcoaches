@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Submit Assignment - {{ assignment.title }}{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h3 class="mb-2">{{ assignment.title }}</h3>
+            <p class="text-muted mb-3">{{ assignment.description }}</p>
+            <div class="mb-3">
+              <small class="text-muted">
+                <i class="fas fa-calendar me-1"></i>Due: {{ assignment.due_date|date:"M d, Y H:i" }}
+                <span class="badge bg-secondary ms-2">{{ assignment.assignment_type|title }}</span>
+              </small>
+            </div>
+            {% if assignment.assignment_file %}
+            <div class="mb-3">
+              <a href="{{ assignment.assignment_file.url }}" class="btn btn-outline-secondary btn-sm" target="_blank">
+                <i class="fas fa-file-download me-1"></i> Download Assignment File
+              </a>
+            </div>
+            {% endif %}
+
+            <hr>
+
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label">Submission Text (optional)</label>
+                <textarea name="submission_text" rows="6" class="form-control" placeholder="Write your response or notes here..."></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Upload File (optional)</label>
+                <input type="file" name="submission_file" class="form-control">
+                <small class="text-muted">Accepted formats: doc, docx, pdf, ppt, images, etc.</small>
+              </div>
+              <div class="d-flex gap-2">
+                <a href="{% url 'courses:topic_detail' topic.id %}" class="btn btn-outline-secondary">
+                  <i class="fas fa-arrow-left me-1"></i> Back to Topic
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-upload me-1"></i> Submit Assignment
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-2">Assignment Info</h6>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2"><strong>Module:</strong> {{ program_module.module.name }}</li>
+              <li class="mb-2"><strong>Topic:</strong> {{ topic.title }}</li>
+              <li class="mb-2"><strong>Max Points:</strong> {{ assignment.max_points }}</li>
+              <li class="mb-2"><strong>Allow Late:</strong> {{ assignment.allow_late_submission|yesno:"Yes,No" }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,13 +1,7 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Global Coaches Academy - Transforming Leaders for Global Impact{% endblock %}
-
-{% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% block title %}Global Coaches Academy - Transforming Leaders for Global Impact{% endblock %} {% block extra_css %}
 <style>
     .hero-section {
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(30, 64, 175, 0.9)), 
-                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(30, 64, 175, 0.9)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
         background-size: cover;
         background-position: center;
         min-height: 100vh;
@@ -185,12 +179,10 @@
         .hero-title {
             font-size: 2.5rem;
         }
-        
         .cta-buttons {
             flex-direction: column;
             align-items: center;
         }
-        
         .btn-hero {
             width: 100%;
             max-width: 300px;
@@ -198,9 +190,7 @@
         }
     }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
@@ -208,24 +198,20 @@
             <div class="col-lg-8 hero-content animate-fade-in">
                 <h1 class="hero-title">Transform Your Leadership Journey</h1>
                 <p class="hero-subtitle">
-                    Join Global Coaches Academy and become part of a transformational educational experience 
-                    that empowers leaders for sustainable development and global impact.
+                    The Global Coaches Program is a 3-tier training pathway designed to raise Spirit-led, system-aware, and purpose-driven leaders who multiply transformation in their communities.
                 </p>
-                
+
                 <div class="cta-buttons">
-                    <a href="{% url 'faculties:faculty_overview' %}" class="btn-hero btn-hero-primary">
-                        <i class="fas fa-university"></i>
-                        Explore Faculties
+                    <a href="{% url 'programs:program_overview' %}" class="btn-hero btn-hero-primary">
+                        <i class="fas fa-graduation-cap"></i> Explore Program
                     </a>
-                    <a href="{% url 'faculties:faculty_overview' %}" class="btn-hero btn-hero-secondary">
-                        <i class="fas fa-rocket"></i>
-                        Join a Track
+                    <a href="{% url 'programs:program_overview' %}" class="btn-hero btn-hero-secondary">
+                        <i class="fas fa-rocket"></i> Join Program
                     </a>
                     {% if not user.is_authenticated %}
-                        <a href="{% url 'core:login' %}" class="btn-hero btn-hero-primary">
-                            <i class="fas fa-sign-in-alt"></i>
-                            Login
-                        </a>
+                    <a href="{% url 'core:login' %}" class="btn-hero btn-hero-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -239,8 +225,8 @@
         <div class="row">
             <div class="col-md-3 col-6">
                 <div class="stat-item">
-                    <span class="stat-number">7</span>
-                    <span class="stat-label">Core Faculties</span>
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Program Levels</span>
                 </div>
             </div>
             <div class="col-md-3 col-6">
@@ -265,6 +251,155 @@
     </div>
 </section>
 
+<!-- Program Structure Section -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">Our 3-Tier Training Pathway</h2>
+            <p class="text-muted">We have simplified the program into three main levels</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-certificate text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">Certificate Level</h5>
+                        <p class="card-text">
+                            Provides a strong foundation in all core areas (faith, leadership, SDGs, education, climate, diplomacy, entrepreneurship). Every participant graduates as a well-rounded coach with exposure to all modules.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-graduation-cap text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">Diploma Level</h5>
+                        <p class="card-text">
+                            Focuses on deeper practice, applied coaching, and community-based projects. Coaches engage in real projects that combine multiple disciplines and demonstrate measurable impact.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-trophy text-warning" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">Advanced Diploma Level</h5>
+                        <p class="card-text">
+                            Coaches step into leadership, mentorship, and multiplication roles. Participants refine their specialization while remaining grounded in the holistic Global Coaches framework.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modules Section -->
+<section class="section-padding" style="background: var(--bg-light);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">Integrated Module Approach</h2>
+            <p class="text-muted">Instead of separating into 7 different categories, we have blended them into modules that cut across all levels</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-3">
+                <div class="d-flex align-items-center p-3 bg-white rounded shadow-sm">
+                    <div class="me-3">
+                        <i class="fas fa-cross text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Module 1: Young Theologians and Gospel Advancing</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 mb-3">
+                <div class="d-flex align-items-center p-3 bg-white rounded shadow-sm">
+                    <div class="me-3">
+                        <i class="fas fa-users text-success" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Module 2: Missional Leadership</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 mb-3">
+                <div class="d-flex align-items-center p-3 bg-white rounded shadow-sm">
+                    <div class="me-3">
+                        <i class="fas fa-globe text-info" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Module 3: SDGs & Community Transformation</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 mb-3">
+                <div class="d-flex align-items-center p-3 bg-white rounded shadow-sm">
+                    <div class="me-3">
+                        <i class="fas fa-book text-warning" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Module 4: Education for Sustainable Development & Global Citizenship</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 mb-3">
+                <div class="d-flex align-items-center p-3 bg-white rounded shadow-sm">
+                    <div class="me-3">
+                        <i class="fas fa-briefcase text-danger" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Module 5: Entrepreneurship and Political Economics</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 mb-3">
+                <div class="d-flex align-items-center p-3 bg-white rounded shadow-sm">
+                    <div class="me-3">
+                        <i class="fas fa-handshake text-secondary" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Module 6: Diplomacy & Global Leadership</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 mb-3">
+                <div class="d-flex align-items-center p-3 bg-white rounded shadow-sm">
+                    <div class="me-3">
+                        <i class="fas fa-leaf text-success" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Module 7: Climate Warriors</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                Each level (Certificate, Diploma, Advanced Diploma) builds on these modules with increasing depth and practice.
+            </p>
+        </div>
+    </div>
+</section>
+
 <!-- Partners Section -->
 <section class="partners-section">
     <div class="container">
@@ -272,7 +407,7 @@
             <h2 class="text-gradient mb-3">Our Trusted Partners</h2>
             <p class="text-muted">Working together to create global impact</p>
         </div>
-        
+
         <div class="row align-items-center justify-content-center">
             <div class="col-lg-2 col-md-3 col-6 text-center mb-4">
                 <div class="partner-placeholder" style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
@@ -310,7 +445,7 @@
             <h2 class="text-gradient mb-3">What Our Community Says</h2>
             <p class="text-muted">Hear from graduates, mentors, and founders</p>
         </div>
-        
+
         <div class="row">
             <div class="col-lg-4 col-md-6">
                 <div class="testimonial-card">
@@ -326,12 +461,12 @@
                         </div>
                         <div class="author-info">
                             <h6>Sarah Adebayo</h6>
-                            <p>Graduate, SDGs & Community Transformation</p>
+                            <p>Graduate, Diploma Level - Module 3</p>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4 col-md-6">
                 <div class="testimonial-card">
                     <div class="quote-icon">
@@ -346,12 +481,12 @@
                         </div>
                         <div class="author-info">
                             <h6>Dr. Michael Okonkwo</h6>
-                            <p>Mentor, Global Leadership & Diplomacy</p>
+                            <p>Mentor, Advanced Diploma Level - Module 6</p>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4 col-md-6">
                 <div class="testimonial-card">
                     <div class="quote-icon">
@@ -366,7 +501,7 @@
                         </div>
                         <div class="author-info">
                             <h6>Emmanuel Kwame</h6>
-                            <p>Graduate, Entrepreneurship & Political Economics</p>
+                            <p>Graduate, Certificate Level - Module 5</p>
                         </div>
                     </div>
                 </div>
@@ -382,12 +517,11 @@
             <div class="col-lg-8">
                 <h2 class="text-gradient mb-3">Ready to Transform Your Leadership Journey?</h2>
                 <p class="text-muted mb-4">
-                    Join thousands of leaders who are making a global impact through our comprehensive programs. 
-                    Choose from 7 specialized faculties and 3 academic levels to find your perfect path.
+                    Join thousands of leaders who are making a global impact through our comprehensive 3-tier program. Progress through Certificate, Diploma, and Advanced Diploma levels with 7 integrated modules.
                 </p>
             </div>
             <div class="col-lg-4 text-lg-end">
-                <a href="{% url 'faculties:faculty_overview' %}" class="btn btn-primary btn-lg me-3">
+                <a href="{% url 'programs:program_overview' %}" class="btn btn-primary btn-lg me-3">
                     <i class="fas fa-rocket me-2"></i>Get Started
                 </a>
                 <a href="{% url 'support:contact' %}" class="btn btn-outline-primary btn-lg">
@@ -397,9 +531,7 @@
         </div>
     </div>
 </section>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
     // Add smooth scrolling and animations
     document.addEventListener('DOMContentLoaded', function() {
@@ -412,7 +544,7 @@
                     const finalValue = parseInt(stat.textContent);
                     let currentValue = 0;
                     const increment = finalValue / 50;
-                    
+
                     const timer = setInterval(() => {
                         currentValue += increment;
                         if (currentValue >= finalValue) {
@@ -425,10 +557,9 @@
                 }
             });
         };
-        
+
         window.addEventListener('scroll', animateStats);
         animateStats(); // Run once on load
     });
 </script>
 {% endblock %}
-

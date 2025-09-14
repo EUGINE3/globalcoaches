@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ lesson.title }} - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .lesson-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 80px 0 40px;
+    }
+
+    .lesson-info {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .lesson-content {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+
+    .resource-item {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+    }
+
+    .resource-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .resource-item.completed {
+        border-left-color: #28a745;
+        background: #f8fff9;
+    }
+
+    .progress-indicator {
+        width: 100%;
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transition: width 0.3s ease;
+    }
+
+    .sidebar-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Lesson Header -->
+<section class="lesson-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="lesson-info">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="mb-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'courses:student_dashboard' %}"
+                                    class="text-white-50">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'courses:module_detail' program_module.id %}"
+                                    class="text-white-50">{{ program_module.module.name }}</a></li>
+                            <li class="breadcrumb-item"><span class="text-white-50">{{ topic.title }}</span></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">{{ lesson.title }}</li>
+                        </ol>
+                    </nav>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="badge bg-light text-dark px-3 py-2">{{ lesson.lesson_type|title }} Session</span>
+                        <span class="badge bg-success px-3 py-2">{{ lesson.duration_minutes }} minutes</span>
+                        <span class="badge bg-info px-3 py-2">Lesson {{ lesson.lesson_number }}</span>
+                    </div>
+                    <h1 class="mb-3">{{ lesson.title }}</h1>
+                    <p class="lead mb-0">{{ lesson.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Lesson Content -->
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Learning Objectives -->
+                <div class="lesson-content">
+                    <h4 class="mb-3"><i class="fas fa-bullseye me-2"></i>Learning Objectives</h4>
+                    <div class="text-muted">{{ lesson.learning_objectives|linebreaks }}</div>
+                </div>
+
+                <!-- Lesson Content -->
+                <div class="lesson-content">
+                    <h4 class="mb-3"><i class="fas fa-book-open me-2"></i>Lesson Content</h4>
+                    <div>{{ lesson.content|linebreaks }}</div>
+                </div>
+
+                <!-- Resources -->
+                {% if resources %}
+                <div class="lesson-content">
+                    <h4 class="mb-3"><i class="fas fa-folder-open me-2"></i>Learning Resources</h4>
+                    {% for resource in resources %}
+                    <div
+                        class="resource-item {% if resource.progress and resource.progress.is_completed %}completed{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-2">
+                                    <i class="fas fa-{{ resource.resource_type }} me-2"></i>
+                                    {{ resource.title }}
+                                    {% if resource.progress and resource.progress.is_completed %}
+                                    <i class="fas fa-check-circle text-success ms-2"></i>
+                                    {% endif %}
+                                </h6>
+                                <p class="text-muted mb-2">{{ resource.content|truncatewords:20 }}</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>{{ resource.estimated_duration_minutes }} minutes
+                                    {% if resource.is_required %}
+                                    <span class="badge bg-warning ms-2">Required</span>
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                {% if resource.file %}
+                                <a href="{{ resource.file.url }}" target="_blank"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download me-1"></i>Download
+                                </a>
+                                {% elif resource.url %}
+                                <a href="{{ resource.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-external-link-alt me-1"></i>Open
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Assignments -->
+                {% if assignments %}
+                <div class="lesson-content">
+                    <h4 class="mb-3"><i class="fas fa-tasks me-2"></i>Assignments</h4>
+                    {% for assignment in assignments %}
+                    <div class="assignment-card border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ assignment.title }}</h6>
+                                <p class="text-muted mb-2">{{ assignment.description|truncatewords:20 }}</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>Due: {{ assignment.due_date|date:"M d, Y" }}
+                                    <span class="badge bg-secondary ms-2">{{ assignment.assignment_type|title }}</span>
+                                </small>
+                            </div>
+                            <div>
+                                <a href="{% url 'courses:submit_assignment' assignment.id %}"
+                                    class="btn btn-sm btn-primary">
+                                    <i class="fas fa-upload me-1"></i>Submit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Progress -->
+                <div class="sidebar-card">
+                    <h6 class="mb-3">Your Progress</h6>
+                    <div class="progress-indicator">
+                        <div class="progress-fill" style="width: {{ lesson_progress.progress_percentage|default:0 }}%">
+                        </div>
+                    </div>
+                    <p class="mb-0 text-muted">{{ lesson_progress.progress_percentage|default:0 }}% Complete</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="sidebar-card">
+                    <h6 class="mb-3">Navigation</h6>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'courses:module_detail' program_module.id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Module
+                        </a>
+                        {% if lesson_progress.is_completed %}
+                        <button class="btn btn-success" disabled>
+                            <i class="fas fa-check me-2"></i>Completed
+                        </button>
+                        {% else %}
+                        <button class="btn btn-primary" onclick="markLessonComplete()">
+                            <i class="fas fa-check me-2"></i>Mark Complete
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Lesson Info -->
+                <div class="sidebar-card">
+                    <h6 class="mb-3">Lesson Information</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><strong>Topic:</strong> {{ topic.title }}</li>
+                        <li class="mb-2"><strong>Duration:</strong> {{ lesson.duration_minutes }} minutes</li>
+                        <li class="mb-2"><strong>Type:</strong> {{ lesson.lesson_type|title }}</li>
+                        <li class="mb-2"><strong>Resources:</strong> {{ resources|length }}</li>
+                        <li class="mb-2"><strong>Assignments:</strong> {{ assignments|length }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    async function markLessonComplete() {
+        const csrftoken = getCookie('csrftoken');
+        try {
+            const resp = await fetch("{% url 'courses:mark_lesson_completed' lesson.id %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await resp.json();
+            if (resp.ok && data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'Could not mark lesson as completed');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Network error');
+        }
+    }
+</script>
+{% endblock %}

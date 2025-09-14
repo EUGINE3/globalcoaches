@@ -1,9 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Learning Progress - Global Coaches Academy{% endblock %}
-
-{% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% block title %}Learning Progress - Global Coaches Academy{% endblock %} {% block extra_css %}
 <style>
     .progress-header {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -104,9 +99,7 @@
         font-size: 0.9rem;
     }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <!-- Progress Header -->
 <section class="progress-header">
     <div class="container">
@@ -126,14 +119,14 @@
         <div class="program-card">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
-                    <h3>{{ program_data.enrollment.faculty_program.faculty.name }}</h3>
-                    <p class="text-muted mb-0">{{ program_data.enrollment.faculty_program.academic_level.name }}</p>
+                    <h3>{{ program_data.enrollment.program_level.name }}</h3>
+                    <p class="text-muted mb-0">{{ program_data.enrollment.program_level.level_type|title }}</p>
                 </div>
                 <div class="text-end">
                     <span class="badge bg-primary">{{ program_data.enrollment.status|title }}</span>
                 </div>
             </div>
-            
+
             <!-- Next Action -->
             {% if program_data.next_action %}
             <div class="next-action-card">
@@ -150,7 +143,7 @@
                 {% endif %}
             </div>
             {% endif %}
-            
+
             <!-- Progress Stats -->
             <div class="progress-stats">
                 <div class="stat-card">
@@ -159,11 +152,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">
-                        {% with completed=program_data.modules|length %}
-                            {% for module_data in program_data.modules %}
-                                {% if module_data.progress.is_completed %}{{ forloop.counter0|add:1 }}{% endif %}
-                            {% endfor %}
-                        {% endwith %}
+                        {% with completed=program_data.modules|length %} {% for module_data in program_data.modules %} {% if module_data.progress.is_completed %}{{ forloop.counter0|add:1 }}{% endif %} {% endfor %} {% endwith %}
                     </div>
                     <div class="stat-label">Completed Modules</div>
                 </div>
@@ -173,16 +162,12 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">
-                        {% if program_data.enrollment.faculty_program.academic_level.credits_required %}
-                            {{ program_data.enrollment.calculate_progress_percentage|floatformat:0 }}%
-                        {% else %}
-                            0%
-                        {% endif %}
+                        {% if program_data.enrollment.program_level.credits_required %} {{ program_data.enrollment.calculate_progress_percentage|floatformat:0 }}% {% else %} 0% {% endif %}
                     </div>
                     <div class="stat-label">Overall Progress</div>
                 </div>
             </div>
-            
+
             <!-- Module Progress -->
             <h5 class="mb-3">Module Progress</h5>
             <div class="module-list">
@@ -190,32 +175,27 @@
                 <div class="module-progress-item {% if module_data.progress.is_completed %}completed{% elif module_data.accessible %}accessible{% else %}locked{% endif %}">
                     <div class="module-icon {% if module_data.progress.is_completed %}completed{% elif module_data.accessible %}accessible{% else %}locked{% endif %}">
                         {% if module_data.progress.is_completed %}
-                            <i class="fas fa-check"></i>
-                        {% elif module_data.accessible %}
-                            <i class="fas fa-play"></i>
-                        {% else %}
-                            <i class="fas fa-lock"></i>
-                        {% endif %}
+                        <i class="fas fa-check"></i> {% elif module_data.accessible %}
+                        <i class="fas fa-play"></i> {% else %}
+                        <i class="fas fa-lock"></i> {% endif %}
                     </div>
                     <div class="flex-grow-1">
                         <h6 class="mb-1">{{ module_data.module.name }}</h6>
                         <p class="text-muted mb-0">{{ module_data.module.course_code }} • {{ module_data.module.credits }} Credits</p>
                         {% if module_data.progress %}
-                        <small class="text-muted">{{ module_data.progress.completion_percentage|floatformat:0 }}% Complete</small>
-                        {% endif %}
+                        <small class="text-muted">{{ module_data.progress.completion_percentage|floatformat:0 }}%
+                            Complete</small> {% endif %}
                     </div>
                     <div class="module-actions">
                         {% if module_data.accessible %}
-                            <a href="{% url 'courses:module_detail' module_data.module.id %}" class="btn btn-sm btn-outline-primary">
-                                {% if module_data.progress.is_completed %}
-                                    <i class="fas fa-eye me-1"></i>Review
-                                {% else %}
-                                    <i class="fas fa-play me-1"></i>Continue
-                                {% endif %}
-                            </a>
-                        {% else %}
-                            <span class="text-muted">Locked</span>
-                        {% endif %}
+                        <a href="{% url 'courses:module_detail' module_data.module.id %}" class="btn btn-sm btn-outline-primary">
+                            {% if module_data.progress.is_completed %}
+                            <i class="fas fa-eye me-1"></i>Review
+                            {% else %}
+                            <i class="fas fa-play me-1"></i>Continue
+                            {% endif %}
+                        </a> {% else %}
+                        <span class="text-muted">Locked</span> {% endif %}
                     </div>
                 </div>
                 {% endfor %}
@@ -226,8 +206,8 @@
             <i class="fas fa-graduation-cap text-muted" style="font-size: 4rem;"></i>
             <h3 class="mt-3">No Active Enrollments</h3>
             <p class="text-muted">You're not currently enrolled in any programs.</p>
-            <a href="{% url 'faculties:faculty_overview' %}" class="btn btn-primary">
-                <i class="fas fa-search me-2"></i>Explore Programs
+            <a href="{% url 'courses:progress_overview' %}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i>Explore Program
             </a>
         </div>
         {% endfor %}

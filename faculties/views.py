@@ -1,79 +1,100 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Faculty, AcademicLevel, FacultyProgram
+from .models import ProgramLevel, Module, ProgramModule
 from students.models import StudentEnrollment
+from courses.utils import ProgressiveAccessManager
 
-def faculty_overview(request):
-    """Display overview of all faculties"""
-    faculties = Faculty.objects.all()
-    return render(request, 'faculties/faculty_overview.html', {'faculties': faculties})
+def program_overview(request):
+    """Display overview of the Global Coaches Program"""
+    program_levels = ProgramLevel.objects.filter(is_active=True)
+    modules = Module.objects.filter(is_active=True)
+    return render(request, 'faculties/program_overview.html', {
+        'program_levels': program_levels,
+        'modules': modules
+    })
 
-def faculty_detail(request, faculty_id):
-    """Display detailed view of a specific faculty"""
-    faculty = get_object_or_404(Faculty, id=faculty_id)
-    return render(request, 'faculties/faculty_detail.html', {
-        'faculty': faculty,
-        'faculty_id': faculty_id
+def program_level_detail(request, level_id):
+    """Display detailed view of a specific program level"""
+    program_level = get_object_or_404(ProgramLevel, id=level_id)
+    program_modules = ProgramModule.objects.filter(
+        program_level=program_level, 
+        is_active=True
+    ).select_related('module')
+    return render(request, 'faculties/program_level_detail.html', {
+        'program_level': program_level,
+        'program_modules': program_modules,
+        'level_id': level_id
+    })
+
+def module_detail(request, module_id):
+    """Display detailed view of a specific module"""
+    module = get_object_or_404(Module, id=module_id)
+    program_modules = ProgramModule.objects.filter(
+        module=module, 
+        is_active=True
+    ).select_related('program_level')
+    return render(request, 'faculties/module_detail.html', {
+        'module': module,
+        'program_modules': program_modules,
+        'module_id': module_id
     })
 
 @login_required
-def apply_to_faculty(request, faculty_id):
-    """Handle faculty application"""
-    faculty = get_object_or_404(Faculty, id=faculty_id)
+def apply_to_program(request, level_id):
+    """Handle program application"""
+    program_level = get_object_or_404(ProgramLevel, id=level_id)
     
     if request.method == 'POST':
         # Get form data
-        program_level = request.POST.get('program_level')
         personal_statement = request.POST.get('personal_statement')
         goals_objectives = request.POST.get('goals_objectives')
         previous_experience = request.POST.get('previous_experience')
         commitment = request.POST.get('commitment')
         
         # Validate required fields
-        if not all([program_level, personal_statement, goals_objectives, commitment]):
+        if not all([personal_statement, goals_objectives, commitment]):
             messages.error(request, 'Please fill in all required fields.')
-            return render(request, 'faculties/apply_to_faculty.html', {'faculty': faculty})
+            return render(request, 'faculties/apply_to_program.html', {'program_level': program_level})
         
         try:
-            # Get the academic level
-            academic_level = AcademicLevel.objects.get(level_type=program_level)
-            
-            # Get or create the faculty program
-            faculty_program, created = FacultyProgram.objects.get_or_create(
-                faculty=faculty,
-                academic_level=academic_level,
-                defaults={
-                    'program_structure': f'Program structure for {faculty.name} - {academic_level.name}',
-                    'is_active': True
-                }
-            )
-            
-            # Check if student is already enrolled
+            # Check if student is already enrolled in this program level
             existing_enrollment = StudentEnrollment.objects.filter(
                 student=request.user,
-                faculty_program=faculty_program
+                program_level=program_level
             ).first()
             
             if existing_enrollment:
-                messages.warning(request, 'You have already applied to this program.')
-                return redirect('faculties:faculty_detail', faculty_id=faculty_id)
+                if existing_enrollment.status == 'active':
+                    messages.info(request, 'You are already enrolled in this program level. Access your courses from the dashboard.')
+                    return redirect('core:dashboard')
+                else:
+                    messages.warning(request, 'You have already applied to this program level.')
+                    return redirect('faculties:program_level_detail', level_id=level_id)
             
-            # Create the enrollment
+            # Create the enrollment with active status (auto-enrollment)
             enrollment = StudentEnrollment.objects.create(
                 student=request.user,
-                faculty_program=faculty_program,
-                status='pending',
+                program_level=program_level,
+                status='active',  # Automatically activate enrollment
                 notes=f"Personal Statement: {personal_statement}\nGoals: {goals_objectives}\nExperience: {previous_experience}"
             )
+
+            # Initialize progressive learning for the student
+            try:
+                access_manager = ProgressiveAccessManager()
+                access_manager.initialize_student_progress(request.user)
+
+                messages.success(request, f'Congratulations! You have been successfully enrolled in the {program_level.name}. You can now access your courses!')
+                return redirect('core:dashboard')  # Redirect to dashboard to see courses
+            except Exception as e:
+                # If progressive learning initialization fails, still show success but log the error
+                messages.success(request, f'You have been enrolled in the {program_level.name}!')
+                messages.warning(request, 'Course access is being set up. Please check back in a few minutes.')
+                return redirect('core:dashboard')
             
-            messages.success(request, f'Your application to {faculty.name} has been submitted successfully!')
-            return redirect('faculties:faculty_detail', faculty_id=faculty_id)
-            
-        except AcademicLevel.DoesNotExist:
-            messages.error(request, 'Invalid program level selected.')
         except Exception as e:
             messages.error(request, f'An error occurred while submitting your application: {str(e)}')
     
-    return render(request, 'faculties/apply_to_faculty.html', {'faculty': faculty})
+    return render(request, 'faculties/apply_to_program.html', {'program_level': program_level})
 

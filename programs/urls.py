@@ -1,0 +1,13 @@
+from django.urls import path
+from . import views
+
+app_name = 'programs'
+
+urlpatterns = [
+    path('', views.program_overview, name='program_overview'),
+    path('level/<int:level_id>/', views.program_level_detail, name='program_level_detail'),
+    path('module/<int:module_id>/', views.module_detail, name='module_detail'),
+    path('level/<int:level_id>/apply/', views.apply_to_program, name='apply_to_program'),
+    path('level/<int:level_id>/enroll/', views.enroll_in_program, name='enroll_in_program'),
+    path('my-enrollments/', views.my_enrollments, name='my_enrollments'),
+]

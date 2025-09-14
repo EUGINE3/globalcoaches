@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 0;
+    }
+
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .stats-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .progress-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .module-progress-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .module-progress-item:last-child {
+        border-bottom: none;
+    }
+
+    .module-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .module-icon.completed {
+        background: #28a745;
+    }
+
+    .module-icon.in-progress {
+        background: #007bff;
+    }
+
+    .module-icon.locked {
+        background: #6c757d;
+    }
+
+    .progress-bar-custom {
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .progress-fill-custom {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        transition: width 0.3s ease;
+    }
+
+    .assignment-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #007bff;
+    }
+
+    .assignment-card.overdue {
+        border-left-color: #dc3545;
+    }
+
+    .assignment-card.due-soon {
+        border-left-color: #ffc107;
+    }
+
+    .assignment-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .due-date {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .due-date.overdue {
+        color: #dc3545;
+        font-weight: bold;
+    }
+
+    .due-date.due-soon {
+        color: #ffc107;
+        font-weight: bold;
+    }
+
+    .badge-custom {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .recent-activity {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+
+    .activity-icon.lesson {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .activity-icon.assignment {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+
+    .activity-icon.resource {
+        background: #e8f5e8;
+        color: #388e3c;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<section class="dashboard-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 mb-2">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+                <p class="lead mb-0">{{ enrollment.program_level.name }} - Continue your learning journey</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="text-white">
+                    <div class="h4 mb-1">{{ dashboard_stats.overall_progress|default:0 }}%</div>
+                    <small>Overall Progress</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Stats -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number text-primary">{{ dashboard_stats.total_modules }}</div>
+                    <div class="stats-label">Total Modules</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number text-success">{{ dashboard_stats.completed_modules }}</div>
+                    <div class="stats-label">Completed</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number text-info">{{ dashboard_stats.total_credits_earned }}</div>
+                    <div class="stats-label">Credits Earned</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number text-warning">{{ dashboard_stats.pending_assignments }}</div>
+                    <div class="stats-label">Pending Assignments</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Dashboard Content -->
+<section class="pb-5">
+    <div class="container">
+        <div class="row">
+            <!-- Module Progress -->
+            <div class="col-lg-8">
+                <div class="progress-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Module Progress</h4>
+                        <a href="{% url 'courses:progressive_modules' %}" class="btn btn-outline-primary btn-sm">
+                            View Learning Path
+                        </a>
+                    </div>
+
+                    {% for item in module_progression %}
+                    <div class="module-progress-item">
+                        <div class="module-icon {{ item.status }}">
+                            {{ item.module.sequence_order }}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">{{ item.module.module.name }}</h6>
+                                    <small class="text-muted">{{ item.module.total_credits }} credits</small>
+                                </div>
+                                <span class="badge badge-custom bg-{{ item.status|yesno:'success,primary,secondary' }}">
+                                    {{ item.status|title }}
+                                </span>
+                            </div>
+                            {% if item.progress %}
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill-custom" style="width: {{ item.completion_percentage }}%">
+                                </div>
+                            </div>
+                            <small class="text-muted">{{ item.completion_percentage }}% complete</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Upcoming Assignments -->
+                <div class="progress-card">
+                    <h4 class="mb-4">Upcoming Assignments</h4>
+                    {% if upcoming_assignments %}
+                    {% for assignment in upcoming_assignments %}
+                    <div
+                        class="assignment-card {% if assignment.is_overdue %}overdue{% elif assignment.days_until_due <= 3 %}due-soon{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ assignment.title }}</h6>
+                                <small class="text-muted">
+                                    {% if assignment.lesson %}
+                                    {{ assignment.lesson.topic.title }} - {{ assignment.lesson.title }}
+                                    {% else %}
+                                    {{ assignment.topic.title }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <span class="badge badge-custom bg-secondary">{{ assignment.assignment_type|title }}</span>
+                        </div>
+                        <div class="assignment-meta">
+                            <span
+                                class="due-date {% if assignment.is_overdue %}overdue{% elif assignment.days_until_due <= 3 %}due-soon{% endif %}">
+                                {% if assignment.is_overdue %}
+                                <i class="fas fa-exclamation-triangle"></i> Overdue
+                                {% elif assignment.days_until_due == 0 %}
+                                <i class="fas fa-clock"></i> Due today
+                                {% elif assignment.days_until_due <= 3 %} <i class="fas fa-clock"></i> Due in {{
+                                    assignment.days_until_due }} day{{ assignment.days_until_due|pluralize }}
+                                    {% else %}
+                                    <i class="fas fa-calendar"></i> Due {{ assignment.due_date|date:"M d, Y" }}
+                                    {% endif %}
+                            </span>
+                            <span class="text-muted">{{ assignment.max_points }} points</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted text-center py-4">No upcoming assignments</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Quick Actions -->
+                <div class="progress-card">
+                    <h5 class="mb-3">Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'courses:progressive_modules' %}" class="btn btn-primary">
+                            <i class="fas fa-book me-2"></i>Continue Learning
+                        </a>
+                        {% if next_lesson %}
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fas fa-play me-2"></i>Next Lesson: {{ next_lesson.title }}
+                        </a>
+                        {% endif %}
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="fas fa-chart-line me-2"></i>View Grades
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <h5 class="mb-3">Recent Activity</h5>
+                    {% if recent_activities %}
+                    {% for activity in recent_activities %}
+                    <div class="activity-item">
+                        <div class="activity-icon {{ activity.type }}">
+                            {% if activity.type == 'lesson' %}
+                            <i class="fas fa-book-open"></i>
+                            {% elif activity.type == 'assignment' %}
+                            <i class="fas fa-tasks"></i>
+                            {% else %}
+                            <i class="fas fa-file"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-medium">{{ activity.title }}</div>
+                            <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted text-center py-3">No recent activity</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add some interactivity
+    document.addEventListener('DOMContentLoaded', function () {
+        // Animate progress bars
+        const progressBars = document.querySelectorAll('.progress-fill-custom');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 500);
+        });
+
+        // Add hover effects to cards
+        const cards = document.querySelectorAll('.stats-card, .progress-card, .assignment-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-2px)';
+            });
+
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+{% endblock %}

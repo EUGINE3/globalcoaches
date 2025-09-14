@@ -1,0 +1,475 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Global Coaches Program - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(30, 64, 175, 0.9));
+        color: white;
+        padding: 100px 0 60px;
+        text-align: center;
+    }
+
+    .program-level-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+        height: 100%;
+    }
+
+    .program-level-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .level-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .level-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+        animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .level-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+
+    .level-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .level-subtitle {
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    .level-body {
+        padding: 2rem;
+    }
+
+    .level-description {
+        color: var(--text-light);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .level-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-level {
+        flex: 1;
+        min-width: 120px;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-level:hover {
+        transform: translateY(-2px);
+    }
+
+    .modules-section {
+        background: var(--bg-light);
+        padding: 80px 0;
+    }
+
+    .module-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+
+    .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .module-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .module-title {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+    }
+
+    .module-description {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .program-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+        .program-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .modules-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .level-actions {
+            flex-direction: column;
+        }
+
+        .btn-level {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="display-4 mb-3">Global Coaches Program</h1>
+        <p class="lead">A 3-tier training pathway designed to raise Spirit-led, system-aware, and purpose-driven leaders
+            who multiply transformation in their communities</p>
+    </div>
+</section>
+
+<!-- Program Levels Section -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">Our 3-Tier Training Pathway</h2>
+            <p class="text-muted">We have simplified the program into three main levels</p>
+        </div>
+
+        <div class="program-grid">
+            <!-- Certificate Level -->
+            <div class="program-level-card">
+                <div class="level-header">
+                    <div class="level-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3 class="level-title">Certificate Level</h3>
+                    <p class="level-subtitle">Foundation Building</p>
+                </div>
+                <div class="level-body">
+                    <p class="level-description">
+                        Provides a strong foundation in all core areas (faith, leadership, SDGs, education, climate,
+                        diplomacy, entrepreneurship). Every participant graduates as a well-rounded coach with exposure
+                        to all modules.
+                    </p>
+
+                    <div class="level-actions">
+                        <a href="{% url 'programs:program_level_detail' 1 %}" class="btn btn-primary btn-level">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        {% if user.is_authenticated %}
+                        {% if user_enrollments.1 == 'active' %}
+                        <a href="{% url 'courses:student_dashboard' %}" class="btn btn-success btn-level">
+                            <i class="fas fa-check-circle me-2"></i>Enrolled - Go to Dashboard
+                        </a>
+                        {% else %}
+                        <form method="post" action="{% url 'programs:enroll_in_program' 1 %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success btn-level"
+                                onclick="return confirm('Are you sure you want to enroll in this program?')">
+                                <i class="fas fa-user-plus me-2"></i>Enroll Now
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% else %}
+                        <a href="{% url 'authentication:login' %}" class="btn btn-outline-primary btn-level">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login to Enroll
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diploma Level -->
+            <div class="program-level-card">
+                <div class="level-header">
+                    <div class="level-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="level-title">Diploma Level</h3>
+                    <p class="level-subtitle">Applied Practice</p>
+                </div>
+                <div class="level-body">
+                    <p class="level-description">
+                        Focuses on deeper practice, applied coaching, and community-based projects. Coaches engage in
+                        real projects that combine multiple disciplines and demonstrate measurable impact.
+                    </p>
+
+                    <div class="level-actions">
+                        <a href="{% url 'programs:program_level_detail' 2 %}" class="btn btn-primary btn-level">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        {% if user.is_authenticated %}
+                        {% if user_enrollments.2 == 'active' %}
+                        <a href="{% url 'courses:student_dashboard' %}" class="btn btn-success btn-level">
+                            <i class="fas fa-check-circle me-2"></i>Enrolled - Go to Dashboard
+                        </a>
+                        {% else %}
+                        <form method="post" action="{% url 'programs:enroll_in_program' 2 %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success btn-level"
+                                onclick="return confirm('Are you sure you want to enroll in this program?')">
+                                <i class="fas fa-user-plus me-2"></i>Enroll Now
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% else %}
+                        <a href="{% url 'authentication:login' %}" class="btn btn-outline-primary btn-level">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login to Enroll
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Diploma Level -->
+            <div class="program-level-card">
+                <div class="level-header">
+                    <div class="level-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="level-title">Advanced Diploma Level</h3>
+                    <p class="level-subtitle">Leadership & Multiplication</p>
+                </div>
+                <div class="level-body">
+                    <p class="level-description">
+                        Coaches step into leadership, mentorship, and multiplication roles. Participants refine their
+                        specialization while remaining grounded in the holistic Global Coaches framework.
+                    </p>
+
+                    <div class="level-actions">
+                        <a href="{% url 'programs:program_level_detail' 3 %}" class="btn btn-primary btn-level">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                        {% if user.is_authenticated %}
+                        {% if user_enrollments.3 == 'active' %}
+                        <a href="{% url 'courses:student_dashboard' %}" class="btn btn-success btn-level">
+                            <i class="fas fa-check-circle me-2"></i>Enrolled - Go to Dashboard
+                        </a>
+                        {% else %}
+                        <form method="post" action="{% url 'programs:enroll_in_program' 3 %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success btn-level"
+                                onclick="return confirm('Are you sure you want to enroll in this program?')">
+                                <i class="fas fa-user-plus me-2"></i>Enroll Now
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% else %}
+                        <a href="{% url 'authentication:login' %}" class="btn btn-outline-primary btn-level">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login to Enroll
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modules Section -->
+<section class="modules-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">Integrated Module Approach</h2>
+            <p class="text-muted">Instead of separating into 7 different categories, we have blended them into modules
+                that cut across all levels</p>
+        </div>
+
+        <div class="modules-grid">
+            <!-- Module 1 -->
+            <div class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-cross"></i>
+                </div>
+                <h4 class="module-title">Module 1: Young Theologians and Gospel Advancing</h4>
+                <p class="module-description">
+                    Deepen theological understanding and develop transformational church leadership skills rooted in
+                    biblical principles.
+                </p>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h4 class="module-title">Module 2: Missional Leadership</h4>
+                <p class="module-description">
+                    Develop missional leadership competencies that integrate faith, purpose, and strategic thinking.
+                </p>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h4 class="module-title">Module 3: SDGs & Community Transformation</h4>
+                <p class="module-description">
+                    Master the UN Sustainable Development Goals framework and drive meaningful community transformation.
+                </p>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h4 class="module-title">Module 4: Education for Sustainable Development & Global Citizenship</h4>
+                <p class="module-description">
+                    Become an educator and advocate for sustainable development, fostering global citizenship.
+                </p>
+            </div>
+
+            <!-- Module 5 -->
+            <div class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h4 class="module-title">Module 5: Entrepreneurship and Political Economics</h4>
+                <p class="module-description">
+                    Launch and scale social enterprises while understanding political economy dynamics.
+                </p>
+            </div>
+
+            <!-- Module 6 -->
+            <div class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h4 class="module-title">Module 6: Diplomacy & Global Leadership</h4>
+                <p class="module-description">
+                    Develop diplomatic skills and global leadership competencies for international relations.
+                </p>
+            </div>
+
+            <!-- Module 7 -->
+            <div class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h4 class="module-title">Module 7: Climate Warriors</h4>
+                <p class="module-description">
+                    Become a climate action leader with expertise in environmental science and policy advocacy.
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                Each level (Certificate, Diploma, Advanced Diploma) builds on these modules with increasing depth and
+                practice.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="section-padding"
+    style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+    <div class="container text-center">
+        <h2 class="mb-3">Ready to Begin Your Transformation?</h2>
+        <p class="lead mb-4">Choose your program level and start your leadership journey today.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'core:register' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Create Account
+            </a>
+            <a href="{% url 'support:contact' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-question-circle me-2"></i>Need Help?
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add animation on scroll
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.program-level-card, .module-card');
+
+        const animateCards = () => {
+            cards.forEach((card, index) => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        };
+
+        // Initial setup
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+        });
+
+        window.addEventListener('scroll', animateCards);
+        animateCards(); // Run once on load
+    });
+</script>
+{% endblock %}

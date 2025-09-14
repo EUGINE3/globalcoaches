@@ -1,0 +1,257 @@
+{% extends 'base.html' %} {% load static %} {% block title %}{{ program_level.name }} - Global Coaches Academy{% endblock %} {% block extra_css %}
+<style>
+    .program-hero {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 100px 0 60px;
+        text-align: center;
+    }
+    
+    .program-content {
+        padding: 80px 0;
+    }
+    
+    .module-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .module-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .module-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .foundational-icon {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    .intermediate-icon {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    .advanced-icon {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+    
+    .depth-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .depth-foundational {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .depth-intermediate {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .depth-advanced {
+        background: #ede9fe;
+        color: #5b21b6;
+    }
+    
+    .credits-info {
+        background: var(--bg-light);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .level-info {
+        background: var(--bg-light);
+        padding: 80px 0;
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .info-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %} {% block content %}
+<!-- Program Hero -->
+<section class="program-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <i class="fas fa-graduation-cap fa-4x mb-4"></i>
+                <h1 class="display-4 mb-3">{{ program_level.name }}</h1>
+                <p class="lead">{{ program_level.description }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Level Information -->
+<section class="level-info">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4 class="mb-3">Duration</h4>
+                    <p class="text-muted">{{ program_level.duration_months }} months</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4 class="mb-3">Modules</h4>
+                    <p class="text-muted">7 Integrated Modules</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-target"></i>
+                    </div>
+                    <h4 class="mb-3">Focus Areas</h4>
+                    <p class="text-muted">{{ program_level.focus_areas }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Program Content -->
+<section class="program-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h2 class="text-gradient mb-4">Modules at {{ program_level.name }}</h2>
+                <p class="text-muted mb-4">
+                    Each module is taught at the appropriate depth level for this program level, ensuring progressive learning and skill development.
+                </p>
+
+                {% for program_module in program_modules %}
+                <div class="module-card">
+                    <div class="module-header">
+                        <div class="module-icon {{ program_module.depth_level }}-icon">
+                            {% if program_module.module.module_type == 'young_theologians' %}
+                            <i class="fas fa-cross"></i> {% elif program_module.module.module_type == 'missional_leadership' %}
+                            <i class="fas fa-users"></i> {% elif program_module.module.module_type == 'sdgs_community' %}
+                            <i class="fas fa-globe"></i> {% elif program_module.module.module_type == 'education_sustainable' %}
+                            <i class="fas fa-book"></i> {% elif program_module.module.module_type == 'entrepreneurship' %}
+                            <i class="fas fa-briefcase"></i> {% elif program_module.module.module_type == 'diplomacy' %}
+                            <i class="fas fa-handshake"></i> {% elif program_module.module.module_type == 'climate_warriors' %}
+                            <i class="fas fa-leaf"></i> {% endif %}
+                        </div>
+                        <div>
+                            <h3>{{ program_module.module.name }}</h3>
+                            <span class="depth-badge depth-{{ program_module.depth_level }}">
+                                {{ program_module.depth_level|title }} Level
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="mb-3">{{ program_module.description }}</p>
+
+                    <div class="credits-info">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Credits:</strong> {{ program_module.credits }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Learning Objectives:</strong> {{ program_module.module.learning_objectives|truncatewords:20 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert alert-info">
+                    <h4>Modules Coming Soon</h4>
+                    <p>We're currently setting up the detailed module structure for this program level. Please check back soon or contact us for more information.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-4">
+                <div class="module-card">
+                    <h4 class="text-gradient mb-4">Apply to {{ program_level.name }}</h4>
+                    <p class="mb-4">Ready to begin your transformational journey? Start your application for this program level.</p>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'faculties:apply_to_program' level_id %}" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Start Application
+                        </a>
+                        <a href="{% url 'faculties:program_overview' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Program Overview
+                        </a>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <h5 class="mb-3">Program Features</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Expert mentorship</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Practical assignments</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Peer collaboration</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Global community</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Certificate upon completion</li>
+                    </ul>
+                </div>
+
+                <div class="module-card">
+                    <h5 class="mb-3">Need Help?</h5>
+                    <p class="mb-3">Have questions about this program level? We're here to help!</p>
+                    <a href="{% url 'support:contact' %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-phone me-2"></i>Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

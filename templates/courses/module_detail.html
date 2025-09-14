@@ -246,12 +246,13 @@
             <div class="col-lg-8">
                 <div class="module-info">
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        <span class="badge bg-light text-dark px-3 py-2">{{ module.course_code }}</span>
-                        <span class="badge bg-success px-3 py-2">{{ module.credits }} Credits</span>
+                        <span class="badge bg-light text-dark px-3 py-2">{{ program_module.program_level.name }}</span>
+                        <span class="badge bg-success px-3 py-2">{{ program_module.credits }} Credits</span>
+                        <span class="badge bg-info px-3 py-2">{{ program_module.depth_level|title }}</span>
                     </div>
                     <h1 class="mb-3">{{ module.name }}</h1>
                     <p class="lead mb-0">
-                        {{ module.description }}
+                        {{ program_module.description }}
                     </p>
                 </div>
             </div>
@@ -264,110 +265,116 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                {% for week in weeks %}
-                <div
-                    class="week-card {% if not week.is_accessible %}locked{% elif week.progress.is_completed %}completed{% endif %}">
-                    <!-- Week Status Badge -->
-                    <div class="week-status">
-                        {% if week.progress.is_completed %}
-                        <span class="status-badge completed">
-                            <i class="fas fa-check"></i> Completed
-                        </span>
-                        {% elif week.is_accessible %}
-                        <span class="status-badge in-progress">
-                            <i class="fas fa-play"></i> Available
-                        </span>
-                        {% else %}
-                        <span class="status-badge locked">
-                            <i class="fas fa-lock"></i> Locked
-                        </span>
-                        {% endif %}
-                    </div>
-
+                {% for topic in topics %}
+                <div class="week-card">
+                    <!-- Topic Header -->
                     <div class="week-header">
-                        <div class="week-number">{{ week.week_number }}</div>
-                        <div>
-                            <h3 class="week-theme">{{ week.theme }}</h3>
-                            <p class="week-value">{{ week.value }}</p>
+                        <div class="week-number">{{ topic.order }}</div>
+                        <div class="flex-grow-1">
+                            <h3 class="week-theme">
+                                <a href="{% url 'courses:topic_detail' topic.id %}" class="text-decoration-none">
+                                    {{ topic.title }}
+                                </a>
+                            </h3>
+                            <p class="week-value">{{ topic.description }}</p>
+                        </div>
+                        <div class="text-end">
+                            <a href="{% url 'courses:topic_detail' topic.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye me-1"></i>View Topic
+                            </a>
                         </div>
                     </div>
 
-                    {% if week.scripture_quote %}
-                    <div class="quote-box">
-                        <p class="mb-0">
-                            <i class="fas fa-quote-left me-2"></i>
-                            {{ week.scripture_quote }}
-                        </p>
-                    </div>
-                    {% elif week.thought_quote %}
-                    <div class="quote-box">
-                        <p class="mb-0">
-                            <i class="fas fa-quote-left me-2"></i>
-                            {{ week.thought_quote }}
-                        </p>
+                    <!-- Topic Learning Objectives -->
+                    {% if topic.learning_objectives %}
+                    <div class="content-section">
+                        <h5><i class="fas fa-bullseye"></i>Learning Objectives</h5>
+                        {{ topic.learning_objectives|linebreaks }}
                     </div>
                     {% endif %}
 
+                    <!-- Lessons Summary -->
                     <div class="content-section">
-                        <h5><i class="fas fa-book-open"></i>Learning Content</h5>
-                        {{ week.content|linebreaks }}
-                    </div>
-
-                    <!-- Include Weekly Resources -->
-                    {% include 'courses/_weekly_resources.html' with resources=week.learning_resources.all %}
-
-                    {% if week.assignment %}
-                    <div class="assignment-card">
-                        <div class="assignment-header">
-                            <h6 class="assignment-title">
-                                <i class="fas fa-tasks me-2"></i>{{ week.assignment.title }}
-                            </h6>
-                            <span class="assignment-points">{{ week.assignment.max_points }} pts</span>
-                        </div>
-                        <p class="mb-3">
-                            {{ week.assignment.description }}
-                        </p>
-                        <div class="d-flex gap-2">
-                            <a href="{% url 'courses:submit_assignment' week.assignment.id %}" class="btn btn-primary">
-                                <i class="fas fa-upload me-2"></i>Submit Assignment
-                            </a>
-                            {% if week.assignment.instructions %}
-                            <button class="btn btn-outline-primary" data-bs-toggle="collapse"
-                                data-bs-target="#instructions-{{ week.week_number }}">
-                                <i class="fas fa-info-circle me-2"></i>View Instructions
-                            </button>
-                            {% endif %}
-                        </div>
-                        {% if week.assignment.instructions %}
-                        <div class="collapse mt-3" id="instructions-{{ week.week_number }}">
-                            <div class="card card-body">
-                                <h6>Assignment Instructions:</h6>
-                                {{ week.assignment.instructions|linebreaks }}
+                        <h5><i class="fas fa-book-open"></i>Lessons Summary</h5>
+                        <div class="lesson-summary p-3 bg-light rounded">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div>
+                                            <h6 class="mb-1">{{ topic.total_lessons }} {{ topic.lessons_label }}</h6>
+                                            <small class="text-muted">
+                                                {{ topic.completed_lessons }} completed
+                                                • {{ topic.total_hours|default:"N/A" }} hours
+                                                • {{ topic.total_credits|default:"N/A" }} credits
+                                            </small>
+                                        </div>
+                                        <div class="ms-3">
+                                            {% if topic.total_lessons > 0 %}
+                                            <div class="progress" style="width: 120px; height: 8px;">
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: {{ topic.progress_percentage|default:0 }}%"
+                                                    aria-valuenow="{{ topic.progress_percentage|default:0 }}"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <small class="text-muted">{{ topic.progress_percentage|default:0 }}%
+                                                complete</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <a href="{% url 'courses:topic_detail' topic.id %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View Topic Detail
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                        {% endif %}
                     </div>
-                    {% endif %}
 
-                    <!-- Locked Overlay -->
-                    {% if not week.is_accessible %}
-                    <div class="locked-overlay">
-                        <div class="lock-icon">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <h5>Week Locked</h5>
-                        <p class="text-center mb-0">
-                            Complete the previous week to unlock this content.
-                        </p>
-                    </div>
-                    {% endif %}
                 </div>
                 {% empty %}
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle me-2"></i>
-                    No weeks have been added to this module yet.
+                    No topics have been added to this module yet.
                 </div>
                 {% endfor %}
+
+                <!-- Module Assignments -->
+                {% if assignments %}
+                <div class="mt-4">
+                    <h4 class="mb-3">Module Assignments</h4>
+                    {% for assignment in assignments %}
+                    <div class="assignment-card">
+                        <div class="assignment-header d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="assignment-title">
+                                    <i class="fas fa-tasks me-2"></i>{{ assignment.title }}
+                                </h6>
+                                <small class="text-muted">Topic: {{ assignment.topic.title }}</small>
+                            </div>
+                            <span class="assignment-points">{{ assignment.max_points }} pts</span>
+                        </div>
+                        <p class="mb-3">{{ assignment.description }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>Due: {{ assignment.due_date|date:"M d, Y" }}
+                                    <span
+                                        class="badge bg-{% if assignment.is_overdue %}danger{% else %}warning{% endif %} ms-2">
+                                        {% if assignment.is_overdue %}Overdue{% else %}{{ assignment.days_until_due }}
+                                        days left{% endif %}
+                                    </span>
+                                </small>
+                            </div>
+                            <a href="{% url 'courses:submit_assignment' assignment.id %}"
+                                class="btn btn-primary btn-sm">
+                                <i class="fas fa-upload me-2"></i>Submit
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
 
             <!-- Sidebar -->
@@ -378,32 +385,34 @@
                     <div class="mb-4">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Overall Progress</span>
-                            <span class="text-primary font-weight-bold">25%</span>
+                            <span class="text-primary font-weight-bold">{{
+                                module_progress.progress_percentage|default:0|floatformat:0 }}%</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 25%"></div>
+                            <div class="progress-fill"
+                                style="width: {{ module_progress.progress_percentage|default:0 }}%"></div>
                         </div>
-                        <small class="text-muted">1 of 4 weeks completed</small>
+                        <small class="text-muted">
+                            {% with completed_topics=0 %}
+                            {% for topic in topics %}
+                            {% if topic.is_completed %}
+                            {% with completed_topics=completed_topics|add:1 %}{% endwith %}
+                            {% endif %}
+                            {% endfor %}
+                            {{ completed_topics }} of {{ topics|length }} topics completed
+                            {% endwith %}
+                        </small>
                     </div>
 
-                    <h6 class="mb-3">Weekly Checklist</h6>
+                    <h6 class="mb-3">Topic Checklist</h6>
                     <div class="list-group list-group-flush">
+                        {% for topic in topics %}
                         <div class="list-group-item d-flex align-items-center">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            <span>Week 1: Leadership Foundations</span>
+                            <i
+                                class="fas fa-{% if topic.is_completed %}check-circle text-success{% else %}circle text-muted{% endif %} me-2"></i>
+                            <span>{{ topic.title }}</span>
                         </div>
-                        <div class="list-group-item d-flex align-items-center">
-                            <i class="fas fa-circle text-muted me-2"></i>
-                            <span>Week 2: Vision & Purpose</span>
-                        </div>
-                        <div class="list-group-item d-flex align-items-center">
-                            <i class="fas fa-circle text-muted me-2"></i>
-                            <span>Week 3: Team Building</span>
-                        </div>
-                        <div class="list-group-item d-flex align-items-center">
-                            <i class="fas fa-circle text-muted me-2"></i>
-                            <span>Week 4: Impact Measurement</span>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -411,13 +420,16 @@
                     <h6 class="mb-3">Module Information</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <strong>Duration:</strong> {{ weeks|length }} weeks
+                            <strong>Topics:</strong> {{ topics|length }}
                         </li>
                         <li class="mb-2">
-                            <strong>Credits:</strong> {{ module.credits }}
+                            <strong>Credits:</strong> {{ program_module.credits }}
                         </li>
                         <li class="mb-2">
-                            <strong>Faculty:</strong> {{ module.faculty_program.faculty.name }}
+                            <strong>Level:</strong> {{ program_module.program_level.name }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Depth:</strong> {{ program_module.depth_level|title }}
                         </li>
                         <li class="mb-2">
                             <strong>Format:</strong> Online

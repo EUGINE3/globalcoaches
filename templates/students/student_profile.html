@@ -1,9 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Student Profile - Global Coaches Academy{% endblock %}
-
-{% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% block title %}Student Profile - Global Coaches Academy{% endblock %} {% block extra_css %}
 <style>
     .profile-header {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -45,9 +40,7 @@
         box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
     }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <!-- Profile Header -->
 <section class="profile-header">
     <div class="container">
@@ -72,11 +65,11 @@
                     <p class="text-muted">Member since {{ user.date_joined|date:"F Y" }}</p>
                 </div>
             </div>
-            
+
             <div class="col-lg-8">
                 <div class="profile-card">
                     <h4 class="text-gradient mb-4">Personal Information</h4>
-                    
+
                     <form>
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -88,12 +81,12 @@
                                 <input type="text" class="form-control" id="lastName" value="{{ user.last_name }}">
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Address</label>
                             <input type="email" class="form-control" id="email" value="{{ user.email }}">
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="phone" class="form-label">Phone Number</label>
@@ -112,31 +105,29 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="bio" class="form-label">Bio</label>
-                            <textarea class="form-control" id="bio" rows="4" 
-                                      placeholder="Tell us about yourself, your goals, and what you hope to achieve..."></textarea>
+                            <textarea class="form-control" id="bio" rows="4" placeholder="Tell us about yourself, your goals, and what you hope to achieve..."></textarea>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="dateOfBirth" class="form-label">Date of Birth</label>
                             <input type="date" class="form-control" id="dateOfBirth">
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-2"></i>Update Profile
                         </button>
                     </form>
                 </div>
-                
+
                 <div class="profile-card">
                     <h4 class="text-gradient mb-4">Academic Information</h4>
-                    
+
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        You haven't enrolled in any programs yet. 
-                        <a href="{% url 'faculties:faculty_overview' %}" class="alert-link">Browse faculties</a> to get started!
+                        <i class="fas fa-info-circle me-2"></i> You haven't enrolled in any programs yet.
+                        <a href="{% url 'courses:progress_overview' %}" class="alert-link">Browse program</a> to get started!
                     </div>
                 </div>
             </div>
@@ -144,4 +135,3 @@
     </div>
 </section>
 {% endblock %}
-

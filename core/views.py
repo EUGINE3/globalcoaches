@@ -62,7 +62,21 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    """Student dashboard view"""
+    """Student dashboard view - redirects to courses dashboard if enrolled"""
+    from students.models import StudentEnrollment
+    from django.shortcuts import redirect
+
+    # Check if user has active enrollment
+    enrollment = StudentEnrollment.objects.filter(
+        student=request.user,
+        status='active'
+    ).first()
+
+    if enrollment:
+        # Redirect to courses dashboard if enrolled
+        return redirect('courses:student_dashboard')
+
+    # Show core dashboard for non-enrolled users
     return render(request, 'core/dashboard.html')
 
 @login_required

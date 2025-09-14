@@ -19,15 +19,21 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Customize admin site
+admin.site.site_header = "Global Coaches Academy Admin"
+admin.site.site_title = "GCA Admin Portal"
+admin.site.index_title = "Welcome to Global Coaches Academy Administration"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('auth/', include('authentication.urls')),
-    path('faculties/', include('faculties.urls')),
     path('courses/', include('courses.urls')),
     path('students/', include('students.urls')),
     path('mentorship/', include('mentorship.urls')),
     path('support/', include('support.urls')),
+    path('programs/', include('programs.urls')),
+    path('faculties/', include('faculties.urls')),
 ]
 
 # Serve media files during development

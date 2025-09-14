@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MentorProfile, MentorshipPairing, MentorshipMessage, WeeklyCheckin, PeerReview
+from .models import MentorProfile, MentorshipPairing, MentorshipMessage, WeeklyCheckin
 
 @admin.register(MentorProfile)
 class MentorProfileAdmin(admin.ModelAdmin):
@@ -33,15 +33,15 @@ class WeeklyCheckinAdmin(admin.ModelAdmin):
     readonly_fields = ('submitted_at',)
     raw_id_fields = ('pairing', 'student')
 
-@admin.register(PeerReview)
-class PeerReviewAdmin(admin.ModelAdmin):
-    list_display = ('reviewer', 'assignment_submission', 'get_average_rating', 'submitted_at', 'is_anonymous')
-    list_filter = ('content_quality', 'creativity', 'presentation', 'is_anonymous', 'submitted_at')
-    search_fields = ('reviewer__username', 'feedback')
-    readonly_fields = ('submitted_at',)
-    raw_id_fields = ('assignment_submission', 'reviewer')
-    
-    def get_average_rating(self, obj):
-        return f"{obj.average_rating:.1f}"
-    get_average_rating.short_description = 'Avg Rating'
+# @admin.register(PeerReview)
+# class PeerReviewAdmin(admin.ModelAdmin):
+#     list_display = ('reviewer', 'assignment_submission', 'get_average_rating', 'submitted_at', 'is_anonymous')
+#     list_filter = ('content_quality', 'creativity', 'presentation', 'is_anonymous', 'submitted_at')
+#     search_fields = ('reviewer__username', 'feedback')
+#     readonly_fields = ('submitted_at',)
+#     raw_id_fields = ('assignment_submission', 'reviewer')
+#     
+#     def get_average_rating(self, obj):
+#         return f"{obj.average_rating:.1f}"
+#     get_average_rating.short_description = 'Avg Rating'
 

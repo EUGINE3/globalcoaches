@@ -17,9 +17,8 @@ class Command(BaseCommand):
             return
 
         # Get enrollment
-        try:
-            enrollment = StudentEnrollment.objects.get(student=user, status='active')
-        except StudentEnrollment.DoesNotExist:
+        enrollment = StudentEnrollment.objects.filter(student=user, status='active').first()
+        if not enrollment:
             self.stdout.write(self.style.ERROR('No active enrollment found for test student'))
             return
 

@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Learning Path - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .learning-path {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 0;
+        text-align: center;
+    }
+
+    .module-progression {
+        padding: 40px 0;
+    }
+
+    .module-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .module-card.locked {
+        background: #f8f9fa;
+        opacity: 0.7;
+    }
+
+    .module-card.completed {
+        border-left: 5px solid #28a745;
+    }
+
+    .module-card.unlocked {
+        border-left: 5px solid #007bff;
+    }
+
+    .module-status {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-locked {
+        background: #6c757d;
+        color: white;
+    }
+
+    .status-unlocked {
+        background: #007bff;
+        color: white;
+    }
+
+    .status-completed {
+        background: #28a745;
+        color: white;
+    }
+
+    .module-sequence {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background: #667eea;
+        color: white;
+        border-radius: 50%;
+        line-height: 40px;
+        text-align: center;
+        font-weight: bold;
+        margin-right: 15px;
+    }
+
+    .module-sequence.completed {
+        background: #28a745;
+    }
+
+    .module-sequence.locked {
+        background: #6c757d;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 15px 0;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        transition: width 0.3s ease;
+    }
+
+    .prerequisites {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .prerequisite-item {
+        display: inline-block;
+        background: #f8f9fa;
+        padding: 5px 10px;
+        border-radius: 15px;
+        margin: 2px;
+        font-size: 12px;
+    }
+
+    .prerequisite-item.completed {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .module-actions {
+        margin-top: 20px;
+    }
+
+    .btn-module {
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-module:hover {
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-module.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .learning-stats {
+        background: #f8f9fa;
+        padding: 30px 0;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Learning Path Header -->
+<section class="learning-path">
+    <div class="container">
+        <h1 class="display-4 mb-3">My Learning Path</h1>
+        <p class="lead">{{ program_level.name }} - Progressive Module Journey</p>
+    </div>
+</section>
+
+<!-- Learning Statistics -->
+<section class="learning-stats">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.total_modules }}</div>
+                    <div class="stat-label">Total Modules</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.unlocked_modules }}</div>
+                    <div class="stat-label">Unlocked</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.completed_modules }}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.overall_progress|default:0 }}%</div>
+                    <div class="stat-label">Overall Progress</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Module Progression -->
+<section class="module-progression">
+    <div class="container">
+        {% if next_module %}
+        <div class="alert alert-info mb-4">
+            <h5><i class="fas fa-arrow-right me-2"></i>Next Module: {{ next_module.module.name }}</h5>
+            <p class="mb-0">Continue your learning journey with the next available module.</p>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            {% for item in progression %}
+            <div class="col-lg-6 mb-4">
+                <div class="module-card {{ item.status }}">
+                    <div class="module-status status-{{ item.status }}">
+                        {% if item.status == 'completed' %}
+                        <i class="fas fa-check"></i> Completed
+                        {% elif item.status == 'unlocked' %}
+                        <i class="fas fa-unlock"></i> Available
+                        {% else %}
+                        <i class="fas fa-lock"></i> Locked
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <div class="module-sequence {{ item.status }}">
+                            {{ item.module.sequence_order }}
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-2">{{ item.module.module.name }}</h5>
+                            <p class="text-muted mb-3">{{ item.module.module.description|truncatewords:20 }}</p>
+
+                            {% if item.progress %}
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ item.completion_percentage|default:0 }}%">
+                                </div>
+                            </div>
+                            <small class="text-muted">Progress: {{ item.completion_percentage|default:0|floatformat:0
+                                }}%</small>
+                            {% endif %}
+
+                            {% if item.prerequisites %}
+                            <div class="prerequisites">
+                                <small class="text-muted d-block mb-2">Prerequisites:</small>
+                                {% for prereq in item.prerequisites %}
+                                <span class="prerequisite-item {% if prereq.completed %}completed{% endif %}">
+                                    {% if prereq.completed %}<i class="fas fa-check me-1"></i>{% endif %}
+                                    {{ prereq.module.module.name }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <div class="module-actions">
+                                {% if item.can_access %}
+                                <a href="{% url 'courses:module_detail' item.module.id %}"
+                                    class="btn btn-primary btn-module">
+                                    <i class="fas fa-play me-2"></i>Continue Learning
+                                </a>
+                                {% else %}
+                                <span class="btn btn-secondary btn-module disabled">
+                                    <i class="fas fa-lock me-2"></i>Complete Prerequisites
+                                </span>
+                                {% endif %}
+
+                                <small class="d-block mt-2 text-muted">
+                                    {{ item.module.credits }} credits • {{ item.module.depth_level|title }} Level
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add animation on scroll
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.module-card');
+
+        const animateCards = () => {
+            cards.forEach((card, index) => {
+                const cardTop = card.getBoundingClientRect().top;
+                const cardVisible = 150;
+
+                if (cardTop < window.innerHeight - cardVisible) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                }
+            });
+        };
+
+        // Initialize cards
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+        });
+
+        window.addEventListener('scroll', animateCards);
+        animateCards(); // Run once on load
+    });
+</script>
+{% endblock %}

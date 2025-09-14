@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Enrollment Successful - Global Coaches Academy{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-hero {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 100px 0 60px;
+        text-align: center;
+    }
+    
+    .success-content {
+        padding: 80px 0;
+    }
+    
+    .success-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #10b981, #059669);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        margin: 0 auto 2rem;
+    }
+    
+    .next-steps {
+        background: var(--bg-light);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .step-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+    
+    .btn-action {
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        margin: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Success Hero -->
+<section class="success-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="display-4 mb-3">🎉 Enrollment Successful!</h1>
+                <p class="lead">Welcome to {{ program_level.name }}!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Content -->
+<section class="success-content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="success-card">
+                    <h2 class="mb-4">Congratulations, {{ user.first_name|default:user.username }}!</h2>
+                    <p class="lead mb-4">
+                        You have successfully enrolled in <strong>{{ program_level.name }}</strong>. 
+                        Your learning journey begins now!
+                    </p>
+                    
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <i class="fas fa-book fa-2x text-primary mb-2"></i>
+                                <h5>Access Courses</h5>
+                                <p class="text-muted">Start with your first module</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <i class="fas fa-users fa-2x text-success mb-2"></i>
+                                <h5>Join Community</h5>
+                                <p class="text-muted">Connect with fellow students</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <i class="fas fa-certificate fa-2x text-warning mb-2"></i>
+                                <h5>Earn Certificate</h5>
+                                <p class="text-muted">Complete and get certified</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center flex-wrap">
+                        <a href="{% url 'courses:student_dashboard' %}" class="btn btn-success btn-action">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                        <a href="{% url 'courses:progressive_modules' %}" class="btn btn-primary btn-action">
+                            <i class="fas fa-book me-2"></i>Start Learning
+                        </a>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <h4 class="mb-3">Your Next Steps:</h4>
+                        
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div>
+                                <h6 class="mb-1">Complete Your Profile</h6>
+                                <p class="text-muted mb-0">Add your photo and personal information</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div>
+                                <h6 class="mb-1">Explore Your Dashboard</h6>
+                                <p class="text-muted mb-0">Familiarize yourself with the learning platform</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div>
+                                <h6 class="mb-1">Start Your First Module</h6>
+                                <p class="text-muted mb-0">Begin with the foundational concepts</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div>
+                                <h6 class="mb-1">Join the Community</h6>
+                                <p class="text-muted mb-0">Connect with other students and mentors</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <p class="text-muted">
+                        Need help getting started? 
+                        <a href="#" class="text-primary">Contact Support</a> or 
+                        <a href="{% url 'programs:program_overview' %}" class="text-primary">View All Programs</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add some celebration animation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate the success icon
+        const successIcon = document.querySelector('.success-icon');
+        if (successIcon) {
+            successIcon.style.transform = 'scale(0)';
+            setTimeout(() => {
+                successIcon.style.transition = 'transform 0.5s ease-out';
+                successIcon.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Animate step items
+        const stepItems = document.querySelectorAll('.step-item');
+        stepItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                item.style.transition = 'all 0.3s ease-out';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 800 + (index * 100));
+        });
+    });
+</script>
+{% endblock %}

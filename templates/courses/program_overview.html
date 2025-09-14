@@ -1,0 +1,302 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Global Coaches Program - 3-Tier Training Pathway{% endblock %} {% block extra_css %}
+<style>
+    .program-hero {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(30, 64, 175, 0.9));
+        color: white;
+        padding: 80px 0;
+    }
+    
+    .level-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+    
+    .level-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .level-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .certificate-icon {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    
+    .diploma-icon {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+    
+    .advanced-icon {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+    
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .module-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid var(--primary-color);
+        transition: transform 0.3s ease;
+    }
+    
+    .module-card:hover {
+        transform: translateY(-3px);
+    }
+    
+    .module-number {
+        background: var(--primary-color);
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .depth-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .depth-foundation {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .depth-practice {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+    
+    .depth-leadership {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, var(--bg-light), #ffffff);
+        padding: 60px 0;
+    }
+</style>
+{% endblock %} {% block content %}
+<!-- Program Hero Section -->
+<section class="program-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">Global Coaches Program</h1>
+                <p class="lead mb-4">
+                    A 3-tier training pathway designed to raise Spirit-led, system-aware, and purpose-driven leaders who multiply transformation in their communities.
+                </p>
+                <p class="mb-0">
+                    We have simplified the program into three main levels with integrated modules that cut across all levels, ensuring every coach develops a balanced foundation and broad capacity.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Program Levels Section -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">Our 3-Tier Training Pathway</h2>
+            <p class="text-muted">Each level builds on the previous with increasing depth and practice</p>
+        </div>
+
+        <div class="row">
+            {% for level in program_levels %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card level-card">
+                    <div class="card-body text-center p-4">
+                        <div class="level-icon {% if level.level_type == 'certificate' %}certificate-icon{% elif level.level_type == 'diploma' %}diploma-icon{% else %}advanced-icon{% endif %}">
+                            {% if level.level_type == 'certificate' %}
+                            <i class="fas fa-certificate"></i> {% elif level.level_type == 'diploma' %}
+                            <i class="fas fa-graduation-cap"></i> {% else %}
+                            <i class="fas fa-trophy"></i> {% endif %}
+                        </div>
+                        <h4 class="card-title text-gradient">{{ level.name }}</h4>
+                        <p class="card-text text-muted">{{ level.description }}</p>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>{{ level.duration_months }} months
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-star me-1"></i>{{ level.credits_required }} credits
+                            </small>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-outline-primary btn-sm">Enroll Now</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Integrated Modules Section -->
+<section class="section-padding" style="background: var(--bg-light);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">Integrated Module Approach</h2>
+            <p class="text-muted">
+                Instead of separating into 7 different categories, we have blended them into modules that cut across all levels. This ensures every coach develops a balanced foundation and broad capacity.
+            </p>
+        </div>
+
+        <div class="module-grid">
+            {% for module in modules %}
+            <div class="module-card">
+                <div class="module-number">{{ forloop.counter }}</div>
+                <h5 class="fw-bold mb-2">{{ module.name }}</h5>
+                <p class="text-muted small mb-3">{{ module.description }}</p>
+                <div class="mb-3">
+                    <strong>Learning Objectives:</strong>
+                    <p class="small text-muted mt-1">{{ module.learning_objectives|truncatewords:20 }}</p>
+                </div>
+                {% if user.is_authenticated %}
+                <a href="#" class="btn btn-sm btn-outline-primary">Learn More</a> {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Program Structure by Level -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient mb-3">Program Structure by Level</h2>
+            <p class="text-muted">See how each module is delivered at different depth levels</p>
+        </div>
+
+        {% for data in program_data %}
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 pb-0">
+                        <h4 class="text-gradient mb-0">
+                            {% if data.level.level_type == 'certificate' %}
+                            <i class="fas fa-certificate text-primary me-2"></i> {% elif data.level.level_type == 'diploma' %}
+                            <i class="fas fa-graduation-cap text-success me-2"></i> {% else %}
+                            <i class="fas fa-trophy text-warning me-2"></i> {% endif %} {{ data.level.name }}
+                        </h4>
+                        <p class="text-muted mt-2">{{ data.level.description }}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for program_module in data.modules %}
+                            <div class="col-lg-6 col-md-6 mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div class="depth-badge 
+                                        {% if program_module.depth_level == 1 %}depth-foundation
+                                        {% elif program_module.depth_level == 2 %}depth-practice
+                                        {% else %}depth-leadership{% endif %}">
+                                        {% if program_module.depth_level == 1 %}Foundation {% elif program_module.depth_level == 2 %}Practice {% else %}Leadership{% endif %}
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-1">{{ program_module.module.name }}</h6>
+                                        <p class="small text-muted mb-2">{{ program_module.learning_outcomes|truncatewords:15 }}</p>
+                                        <small class="text-muted">
+                                            <strong>Assessment:</strong> {{
+                                            program_module.assessment_criteria|truncatewords:10 }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="text-gradient mb-3">Ready to Start Your Leadership Journey?</h2>
+                <p class="text-muted mb-4">
+                    Join the Global Coaches Program and become part of a transformational educational experience that empowers leaders for sustainable development and global impact.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                {% if user.is_authenticated %}
+                <a href="{% url 'courses:progress_overview' %}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-chart-line me-2"></i>View Progress
+                </a>
+                {% else %}
+                <a href="{% url 'core:register' %}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-user-plus me-2"></i>Get Started
+                </a>
+                {% endif %}
+                <a href="{% url 'support:contact' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-phone me-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} {% block extra_js %}
+<script>
+    // Add smooth scrolling and animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards
+        document.querySelectorAll('.level-card, .module-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    });
+</script>
+{% endblock %}

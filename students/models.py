@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from faculties.models import FacultyProgram
+from programs.models import ProgramLevel
 
 class StudentEnrollment(models.Model):
-    """Student enrollment in faculty programs"""
+    """Student enrollment in program levels"""
     STATUS_CHOICES = [
         ('pending', 'Pending Approval'),
         ('active', 'Active'),
@@ -14,7 +14,7 @@ class StudentEnrollment(models.Model):
     ]
     
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
-    faculty_program = models.ForeignKey(FacultyProgram, on_delete=models.CASCADE, related_name='enrollments')
+    program_level = models.ForeignKey(ProgramLevel, on_delete=models.CASCADE, related_name='enrollments')
     enrollment_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     start_date = models.DateField(blank=True, null=True)
@@ -25,16 +25,16 @@ class StudentEnrollment(models.Model):
     notes = models.TextField(blank=True)
 
     class Meta:
-        unique_together = ['student', 'faculty_program']
+        unique_together = ['student', 'program_level']
 
     def __str__(self):
-        return f"{self.student.username} - {self.faculty_program}"
+        return f"{self.student.username} - {self.program_level}"
 
     def calculate_progress_percentage(self):
         """Calculate completion percentage"""
-        if not self.faculty_program.academic_level.credits_required:
-            return 0
-        return (self.total_credits_earned / self.faculty_program.academic_level.credits_required) * 100
+        # if not self.program_level.credits_required:
+        #     return 0
+        return (self.total_credits_earned / 5) * 100
 
 class Certificate(models.Model):
     """Student certificates and graduation records"""
