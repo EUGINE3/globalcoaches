@@ -120,8 +120,10 @@
                     <!-- Breadcrumb -->
                     <nav aria-label="breadcrumb" class="mb-3">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{% url 'courses:student_dashboard' %}" class="text-white-50">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{% url 'courses:module_detail' program_module.id %}" class="text-white-50">{{ program_module.module.name }}</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'courses:student_dashboard' %}"
+                                    class="text-white-50">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'courses:module_detail' program_module.id %}"
+                                    class="text-white-50">{{ program_module.module.name }}</a></li>
                             <li class="breadcrumb-item active text-white" aria-current="page">{{ topic.title }}</li>
                         </ol>
                     </nav>
@@ -169,9 +171,10 @@
                 <!-- Lessons -->
                 <div class="lesson-card">
                     <h4 class="mb-4"><i class="fas fa-list me-2"></i>Lessons ({{ lessons|length }})</h4>
-                    
+
                     {% for lesson in lessons %}
-                    <div class="lesson-item mb-4 p-3 border rounded {% if not lesson.is_accessible %}opacity-50{% endif %}">
+                    <div
+                        class="lesson-item mb-4 p-3 border rounded {% if not lesson.is_accessible %}opacity-50{% endif %}">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center gap-2 mb-2">
@@ -211,7 +214,8 @@
                             </div>
                             <div class="text-end">
                                 {% if lesson.is_accessible %}
-                                <a href="{% url 'courses:lesson_detail' lesson.id %}" class="btn btn-sm btn-outline-primary">
+                                <a href="{% url 'courses:lesson_detail' lesson.id %}"
+                                    class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-arrow-right me-1"></i>
                                     {% if lesson.progress and lesson.progress.is_started %}Continue{% else %}Start{% endif %}
                                 </a>
@@ -230,7 +234,8 @@
                             <div class="row">
                                 {% for resource in lesson.resource_list|slice:":3" %}
                                 <div class="col-md-4">
-                                    <div class="resource-item {% if resource.progress and resource.progress.is_completed %}completed{% endif %}">
+                                    <div
+                                        class="resource-item {% if resource.progress and resource.progress.is_completed %}completed{% endif %}">
                                         <small class="d-block">
                                             <i class="fas fa-{{ resource.resource_type }} me-1"></i>
                                             {{ resource.title|truncatewords:4 }}
@@ -278,7 +283,8 @@
                                 </small>
                             </div>
                             <div>
-                                <a href="{% url 'courses:submit_assignment' assignment.id %}" class="btn btn-sm btn-primary">
+                                <a href="{% url 'courses:submit_assignment' assignment.id %}"
+                                    class="btn btn-sm btn-primary">
                                     <i class="fas fa-upload me-1"></i>Submit
                                 </a>
                             </div>
@@ -299,6 +305,17 @@
                     </div>
                     <p class="mb-0 text-muted">{{ topic_progress|default:0 }}% Complete</p>
                     <small class="text-muted">{{ completed_lessons }} of {{ total_lessons }} lessons completed</small>
+                </div>
+
+                <!-- Topic Discussion -->
+                <div class="sidebar-card">
+                    <h6 class="mb-3">Topic Discussion</h6>
+                    <p class="mb-3">Discuss this topic with your peers.</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'courses:topic_discussion' topic.id %}" class="btn btn-primary">
+                            <i class="fas fa-comments me-2"></i>Join Discussion
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Navigation -->
@@ -323,7 +340,8 @@
                         <li class="mb-2"><strong>Credits:</strong> {{ topic.total_credits }}</li>
                         <li class="mb-2"><strong>Total Hours:</strong> {{ topic.total_hours }}</li>
                         <li class="mb-2"><strong>Theory Hours:</strong> {{ topic.theory_hours|default:"N/A" }}</li>
-                        <li class="mb-2"><strong>Practical Hours:</strong> {{ topic.practical_hours|default:"N/A" }}</li>
+                        <li class="mb-2"><strong>Practical Hours:</strong> {{ topic.practical_hours|default:"N/A" }}
+                        </li>
                         <li class="mb-2"><strong>Lessons:</strong> {{ lessons|length }}</li>
                         <li class="mb-2"><strong>Assignments:</strong> {{ topic_assignments|length }}</li>
                     </ul>

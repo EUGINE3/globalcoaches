@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+  <div class="container">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'courses:student_dashboard' %}">Dashboard</a></li>
+            {% if post.module_discussion %}
+            <li class="breadcrumb-item"><a
+                href="{% url 'courses:module_detail' post.module_discussion.program_module.id %}">{{
+                post.module_discussion.program_module.module.name }}</a></li>
+            <li class="breadcrumb-item"><a
+                href="{% url 'courses:module_discussion' post.module_discussion.program_module.id %}">Discussion</a>
+            </li>
+            {% elif post.topic_discussion %}
+            <li class="breadcrumb-item"><a
+                href="{% url 'courses:module_detail' post.topic_discussion.topic.program_module.id %}">{{
+                post.topic_discussion.topic.program_module.module.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'courses:topic_detail' post.topic_discussion.topic.id %}">{{
+                post.topic_discussion.topic.title }}</a></li>
+            <li class="breadcrumb-item"><a
+                href="{% url 'courses:topic_discussion' post.topic_discussion.topic.id %}">Discussion</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ post.title|truncatechars:50 }}</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <!-- Main Post -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex align-items-center">
+                {% if post.is_pinned %}
+                <i class="fas fa-thumbtack text-warning me-2" title="Pinned"></i>
+                {% endif %}
+                <h3 class="mb-0">{{ post.title }}</h3>
+              </div>
+              {% if post.can_edit %}
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                  data-bs-toggle="dropdown">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item text-danger" href="#" onclick="deletePost({{ post.id }})">
+                      <i class="fas fa-trash me-2"></i>Delete Post
+                    </a></li>
+                </ul>
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-3">
+                <strong>{{ post.author.get_full_name|default:post.author.username }}</strong>
+                <small class="text-muted d-block">{{ post.created_at|date:"M d, Y H:i" }}</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              {{ post.content|linebreaks }}
+            </div>
+
+            {% if post.attachment %}
+            <div class="mb-3">
+              <a href="{{ post.attachment.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                <i class="fas fa-paperclip me-1"></i>View Attachment
+              </a>
+            </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm btn-outline-danger like-btn" data-post-id="{{ post.id }}">
+                  <i class="fas fa-heart me-1"></i>
+                  <span class="like-count">{{ post.likes.count }}</span> likes
+                </button>
+                <span class="text-muted">
+                  <i class="fas fa-comments me-1"></i>{{ post.reply_count }} replies
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reply Form -->
+        {% if can_reply %}
+        <div class="card shadow-sm mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-reply me-2"></i>Reply to this post</h5>
+          </div>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label">Reply Title</label>
+                <input type="text" name="title" class="form-control" placeholder="Re: {{ post.title }}" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Your Reply</label>
+                <textarea name="content" rows="4" class="form-control" placeholder="Share your thoughts..."
+                  required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane me-1"></i>Post Reply
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Replies -->
+        {% if replies %}
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-comments me-2"></i>Replies ({{ replies.count }})</h5>
+          </div>
+          <div class="card-body p-0">
+            {% for reply in replies %}
+            <div class="border-bottom p-3 {% if not forloop.last %}border-bottom{% endif %}">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex align-items-center">
+                  <strong>{{ reply.author.get_full_name|default:reply.author.username }}</strong>
+                  <small class="text-muted ms-2">{{ reply.created_at|date:"M d, Y H:i" }}</small>
+                </div>
+                {% if reply.can_edit %}
+                <button class="btn btn-sm btn-outline-danger" onclick="deletePost({{ reply.id }})">
+                  <i class="fas fa-trash"></i>
+                </button>
+                {% endif %}
+              </div>
+
+              <h6 class="mb-2">{{ reply.title }}</h6>
+              <div class="mb-2">{{ reply.content|linebreaks }}</div>
+
+              {% if reply.attachment %}
+              <div class="mb-2">
+                <a href="{{ reply.attachment.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                  <i class="fas fa-paperclip me-1"></i>View Attachment
+                </a>
+              </div>
+              {% endif %}
+
+              <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm btn-outline-danger like-btn" data-post-id="{{ reply.id }}">
+                  <i class="fas fa-heart me-1"></i>
+                  <span class="like-count">{{ reply.likes.count }}</span>
+                </button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-3">Discussion Info</h6>
+            {% if post.module_discussion %}
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2"><strong>Module:</strong> {{ post.module_discussion.program_module.module.name }}</li>
+              <li class="mb-0"><strong>Discussion:</strong> {{ post.module_discussion.title }}</li>
+            </ul>
+            {% elif post.topic_discussion %}
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2"><strong>Module:</strong> {{ post.topic_discussion.topic.program_module.module.name }}
+              </li>
+              <li class="mb-2"><strong>Topic:</strong> {{ post.topic_discussion.topic.title }}</li>
+              <li class="mb-0"><strong>Discussion:</strong> {{ post.topic_discussion.title }}</li>
+            </ul>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="mb-3">Quick Actions</h6>
+            <div class="d-grid gap-2">
+              {% if post.module_discussion %}
+              <a href="{% url 'courses:module_discussion' post.module_discussion.program_module.id %}"
+                class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Discussion
+              </a>
+              <a href="{% url 'courses:module_detail' post.module_discussion.program_module.id %}"
+                class="btn btn-outline-secondary">
+                <i class="fas fa-book me-2"></i>Back to Module
+              </a>
+              {% elif post.topic_discussion %}
+              <a href="{% url 'courses:topic_discussion' post.topic_discussion.topic.id %}"
+                class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Discussion
+              </a>
+              <a href="{% url 'courses:topic_detail' post.topic_discussion.topic.id %}"
+                class="btn btn-outline-secondary">
+                <i class="fas fa-book me-2"></i>Back to Topic
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Like/Unlike functionality
+  document.addEventListener('DOMContentLoaded', function () {
+    const likeButtons = document.querySelectorAll('.like-btn');
+
+    likeButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        const postId = this.dataset.postId;
+        const likeCountSpan = this.querySelector('.like-count');
+
+        fetch(`/courses/api/discussion/post/${postId}/like/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+            likeCountSpan.textContent = data.like_count;
+            if (data.liked) {
+              this.classList.remove('btn-outline-danger');
+              this.classList.add('btn-danger');
+            } else {
+              this.classList.remove('btn-danger');
+              this.classList.add('btn-outline-danger');
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      });
+    });
+  });
+
+  // Delete post functionality
+  function deletePost(postId) {
+    if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+      fetch(`/courses/api/discussion/post/${postId}/delete/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+      })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert('Error deleting post. Please try again.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error deleting post. Please try again.');
+        });
+    }
+  }
+
+  // Auto-resize textarea
+  const textareas = document.querySelectorAll('textarea');
+  textareas.forEach(function (textarea) {
+    textarea.addEventListener('input', function () {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+  });
+</script>
+{% endblock %}

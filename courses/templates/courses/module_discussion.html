@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ discussion.title }} - {{ program_module.module.name }}{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+  <div class="container">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'courses:student_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'courses:module_detail' program_module.id %}">{{ program_module.module.name }}</a></li>
+            <li class="breadcrumb-item active">Discussion</li>
+          </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h2 class="mb-1">{{ discussion.title }}</h2>
+            <p class="text-muted mb-0">{{ discussion.description }}</p>
+          </div>
+          <div class="text-end">
+            <span class="badge bg-primary">{{ total_posts }} Posts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <!-- New Post Form -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Start a New Discussion</h5>
+          </div>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input type="text" name="title" class="form-control" placeholder="What would you like to discuss?" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea name="content" rows="4" class="form-control" placeholder="Share your thoughts, questions, or insights..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane me-1"></i>Post Discussion
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Discussion Posts -->
+        {% for post in posts %}
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="d-flex align-items-center">
+                {% if post.is_pinned %}
+                <i class="fas fa-thumbtack text-warning me-2" title="Pinned"></i>
+                {% endif %}
+                <h6 class="mb-0">
+                  <a href="{% url 'courses:discussion_post_detail' post.id %}" class="text-decoration-none">
+                    {{ post.title }}
+                  </a>
+                </h6>
+              </div>
+              <small class="text-muted">{{ post.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+            
+            <p class="text-muted mb-2">{{ post.content|truncatewords:30 }}</p>
+            
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-3">
+                <small class="text-muted">
+                  <i class="fas fa-user me-1"></i>{{ post.author.get_full_name|default:post.author.username }}
+                </small>
+                <small class="text-muted">
+                  <i class="fas fa-comments me-1"></i>{{ post.reply_count }} replies
+                </small>
+                <small class="text-muted">
+                  <i class="fas fa-heart me-1"></i>{{ post.likes.count }} likes
+                </small>
+              </div>
+              <a href="{% url 'courses:discussion_post_detail' post.id %}" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-eye me-1"></i>View
+              </a>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="card shadow-sm">
+          <div class="card-body text-center py-5">
+            <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No discussions yet</h5>
+            <p class="text-muted">Be the first to start a discussion in this module!</p>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if posts.has_other_pages %}
+        <nav aria-label="Discussion pagination">
+          <ul class="pagination justify-content-center">
+            {% if posts.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            
+            {% for num in posts.paginator.page_range %}
+            {% if posts.number == num %}
+            <li class="page-item active">
+              <span class="page-link">{{ num }}</span>
+            </li>
+            {% elif num > posts.number|add:'-3' and num < posts.number|add:'3' %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if posts.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ posts.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-3">Discussion Guidelines</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Be respectful and constructive</li>
+              <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Stay on topic</li>
+              <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Share your insights and experiences</li>
+              <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Ask questions when you need help</li>
+              <li class="mb-0"><i class="fas fa-check text-success me-2"></i>Support your fellow learners</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="mb-3">Quick Actions</h6>
+            <div class="d-grid gap-2">
+              <a href="{% url 'courses:module_detail' program_module.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Module
+              </a>
+              <a href="{% url 'courses:progressive_modules' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-list me-2"></i>Learning Path
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

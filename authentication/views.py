@@ -77,29 +77,27 @@ def register_view(request):
             })
 
         try:
-            # Create user (inactive until email verification)
+            # Create user (active immediately - no email verification required)
             user = User.objects.create_user(
                 username=username,
                 email=email,
                 password=password1,
                 first_name=first_name,
                 last_name=last_name,
-                is_active=False  # Require email verification
+                is_active=True  # Active immediately
             )
 
             # Create user profile
             UserProfile.objects.create(user=user)
 
-            # Send verification email
-            if send_verification_email(user, request):
-                messages.success(
-                    request,
-                    f'Registration successful! Please check your email ({email}) to verify your account.'
-                )
-                return redirect('authentication:verification_sent')
-            else:
-                messages.error(request, 'Registration successful, but failed to send verification email. Please contact support.')
-                return redirect('authentication:login')
+            # Send welcome email (optional)
+            send_welcome_email(user)
+
+            messages.success(
+                request,
+                f'Registration successful! You can now log in with your credentials.'
+            )
+            return redirect('authentication:login')
 
         except Exception as e:
             logger.error(f"Registration error: {e}")
@@ -141,7 +139,7 @@ def login_view(request):
                 return redirect(next_url)
             else:
                 log_login_attempt(username, request, success=False)
-                messages.error(request, 'Your account is not activated. Please check your email for verification instructions.')
+                messages.error(request, 'Your account has been deactivated. Please contact support.')
         else:
             log_login_attempt(username, request, success=False)
             messages.error(request, 'Invalid username or password.')

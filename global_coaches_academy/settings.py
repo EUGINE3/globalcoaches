@@ -175,7 +175,7 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'EugineOchung <ochungeugine
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Email verification settings
-EMAIL_VERIFICATION_REQUIRED = True
+EMAIL_VERIFICATION_REQUIRED = False  # Disabled for now
 EMAIL_VERIFICATION_TOKEN_EXPIRY = 24 * 60 * 60  # 24 hours in seconds
 PASSWORD_RESET_TOKEN_EXPIRY = 60 * 60*24 # 24 hour in seconds
 

@@ -7,7 +7,15 @@ from .models import (
     Module, ModuleTopic, Course, WeeklyResource,
     ResourceView, WeekProgress, ModuleProgress,
     Lesson, LessonResource, Assignment, AssignmentSubmission,
-    LessonProgress, ResourceProgress
+    LessonProgress, ResourceProgress, ModuleDiscussion, TopicDiscussion,
+    DiscussionPost, DiscussionLike, DiscussionView
+)
+from .models import (
+    Module, ModuleTopic, Course, WeeklyResource,
+    ResourceView, WeekProgress, ModuleProgress,
+    Lesson, LessonResource, Assignment, AssignmentSubmission,
+    LessonProgress, ResourceProgress, ModuleDiscussion, TopicDiscussion,
+    DiscussionPost, DiscussionLike, DiscussionView
 )
 
 
@@ -43,6 +51,8 @@ class AssignmentInline(admin.TabularInline):
     extra = 0
     fields = ('title', 'assignment_type', 'due_date', 'max_points', 'is_active')
     readonly_fields = ()
+
+
 
 class ModuleTopicInline(admin.StackedInline):
     model = ModuleTopic
@@ -420,3 +430,119 @@ class AssignmentSubmissionAdmin(admin.ModelAdmin):
         else:
             return format_html('<span style="color: red;">❌ Failed ({}%)</span>', round(obj.grade_percentage))
     grade_status.short_description = 'Grade Status'
+
+
+# Discussion Admin Classes
+class DiscussionPostInline(admin.TabularInline):
+    model = DiscussionPost
+    extra = 0
+    fields = ('author', 'title', 'is_pinned', 'is_approved', 'created_at')
+    readonly_fields = ('created_at',)
+
+
+@admin.register(ModuleDiscussion)
+class ModuleDiscussionAdmin(admin.ModelAdmin):
+    list_display = ('program_module', 'title', 'total_posts', 'latest_activity', 'is_active')
+    list_filter = ('is_active', 'program_module__program_level', 'created_at')
+    search_fields = ('title', 'description', 'program_module__module__name')
+    raw_id_fields = ('program_module',)
+    inlines = [DiscussionPostInline]
+    readonly_fields = ('created_at', 'updated_at')
+
+    def latest_activity(self, obj):
+        latest_post = obj.latest_post
+        if latest_post:
+            return format_html(
+                '<span style="color: #007bff;">{} by {}</span>',
+                latest_post.created_at.strftime('%b %d, %Y'),
+                latest_post.author.username
+            )
+        return format_html('<span style="color: #6c757d;">No posts yet</span>')
+    latest_activity.short_description = 'Latest Activity'
+
+
+@admin.register(TopicDiscussion)
+class TopicDiscussionAdmin(admin.ModelAdmin):
+    list_display = ('topic', 'title', 'total_posts', 'latest_activity', 'is_active')
+    list_filter = ('is_active', 'topic__program_module__program_level', 'created_at')
+    search_fields = ('title', 'description', 'topic__title')
+    raw_id_fields = ('topic',)
+    inlines = [DiscussionPostInline]
+    readonly_fields = ('created_at', 'updated_at')
+
+    def latest_activity(self, obj):
+        latest_post = obj.latest_post
+        if latest_post:
+            return format_html(
+                '<span style="color: #007bff;">{} by {}</span>',
+                latest_post.created_at.strftime('%b %d, %Y'),
+                latest_post.author.username
+            )
+        return format_html('<span style="color: #6c757d;">No posts yet</span>')
+    latest_activity.short_description = 'Latest Activity'
+
+
+@admin.register(DiscussionPost)
+class DiscussionPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'get_discussion', 'is_reply', 'reply_count', 'is_pinned', 'is_approved', 'created_at')
+    list_filter = ('is_pinned', 'is_approved', 'is_locked', 'created_at')
+    search_fields = ('title', 'content', 'author__username')
+    raw_id_fields = ('author', 'module_discussion', 'topic_discussion', 'parent_post')
+    readonly_fields = ('created_at', 'updated_at', 'edited_at')
+    date_hierarchy = 'created_at'
+    ordering = ('-is_pinned', '-created_at')
+
+    fieldsets = (
+        ('Post Details', {
+            'fields': ('module_discussion', 'topic_discussion', 'parent_post', 'author', 'title', 'content', 'attachment')
+        }),
+        ('Moderation', {
+            'fields': ('is_pinned', 'is_locked', 'is_approved')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at', 'edited_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def get_discussion(self, obj):
+        discussion = obj.discussion
+        if obj.module_discussion:
+            return format_html('<span style="color: #28a745;">📚 Module: {}</span>', discussion.program_module.module.name)
+        elif obj.topic_discussion:
+            return format_html('<span style="color: #007bff;">📖 Topic: {}</span>', discussion.topic.title)
+        return "No Discussion"
+    get_discussion.short_description = 'Discussion'
+
+    def is_reply(self, obj):
+        if obj.parent_post:
+            return format_html('<span style="color: #ffc107;">↳ Reply</span>')
+        return format_html('<span style="color: #28a745;">💬 Original</span>')
+    is_reply.short_description = 'Type'
+
+
+@admin.register(DiscussionLike)
+class DiscussionLikeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'post', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username', 'post__title')
+    raw_id_fields = ('user', 'post')
+    readonly_fields = ('created_at',)
+
+
+@admin.register(DiscussionView)
+class DiscussionViewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'get_discussion', 'last_viewed_at', 'last_post_seen')
+    list_filter = ('last_viewed_at',)
+    search_fields = ('user__username',)
+    raw_id_fields = ('user', 'module_discussion', 'topic_discussion', 'last_post_seen')
+    readonly_fields = ('last_viewed_at',)
+
+    def get_discussion(self, obj):
+        if obj.module_discussion:
+            return format_html('<span style="color: #28a745;">📚 Module: {}</span>', obj.module_discussion.program_module.module.name)
+        elif obj.topic_discussion:
+            return format_html('<span style="color: #007bff;">📖 Topic: {}</span>', obj.topic_discussion.topic.title)
+        return "No Discussion"
+    get_discussion.short_description = 'Discussion'
+    

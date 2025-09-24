@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from programs.models import ProgramLevel, ProgramModule
 from students.models import StudentEnrollment
+from django.core.validators import MinValueValidator, MaxValueValidator
+from .quiz_models import QuizQuestion, QuizChoice
 import os
 
 
@@ -221,6 +223,8 @@ class Assignment(models.Model):
         ('research', 'Research Assignment'),
         ('case_study', 'Case Study'),
         ('reflection', 'Reflection Paper'),
+        ('quiz', 'Quiz'),
+        ('exam', 'Exam'),
     ]
     assignment_type = models.CharField(max_length=20, choices=ASSIGNMENT_TYPES)
 
@@ -233,6 +237,17 @@ class Assignment(models.Model):
     # Files and resources
     assignment_file = models.FileField(upload_to=assignment_upload_path, blank=True, null=True, help_text="Assignment document or template")
     rubric_file = models.FileField(upload_to=assignment_upload_path, blank=True, null=True, help_text="Grading rubric")
+
+    # Quiz specific fields
+    is_quiz = models.BooleanField(default=False)
+    time_limit_minutes = models.IntegerField(null=True, blank=True)
+    passing_score = models.IntegerField(
+        default=70,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        help_text='Minimum score required to pass (%)'
+    )
+    shuffle_questions = models.BooleanField(default=True)
+    show_correct_answers = models.BooleanField(default=True)
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -589,4 +604,170 @@ class ModuleProgress(models.Model):
         """Unlock next modules when this one is completed"""
         from .utils import ProgressiveAccessManager
         ProgressiveAccessManager.unlock_next_modules(self.student, self.program_module)
+
+
+# Discussion Models
+class ModuleDiscussion(models.Model):
+    """Discussion forum for each module"""
+    program_module = models.OneToOneField(ProgramModule, on_delete=models.CASCADE, related_name='discussion')
+    title = models.CharField(max_length=200, default="Module Discussion")
+    description = models.TextField(blank=True, help_text="Description of what this discussion is about")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Module Discussion"
+        verbose_name_plural = "Module Discussions"
+
+    def __str__(self):
+        return f"Discussion: {self.program_module}"
+
+    @property
+    def total_posts(self):
+        return self.posts.count()
+
+    @property
+    def latest_post(self):
+        return self.posts.order_by('-created_at').first()
+
+
+class TopicDiscussion(models.Model):
+    """Discussion forum for each topic"""
+    topic = models.OneToOneField(ModuleTopic, on_delete=models.CASCADE, related_name='discussion')
+    title = models.CharField(max_length=200, default="Topic Discussion")
+    description = models.TextField(blank=True, help_text="Description of what this discussion is about")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Topic Discussion"
+        verbose_name_plural = "Topic Discussions"
+
+    def __str__(self):
+        return f"Discussion: {self.topic.title}"
+
+    @property
+    def total_posts(self):
+        return self.posts.count()
+
+    @property
+    def latest_post(self):
+        return self.posts.order_by('-created_at').first()
+
+
+class DiscussionPost(models.Model):
+    """Individual posts in discussions"""
+    # Either module or topic discussion (not both)
+    module_discussion = models.ForeignKey(ModuleDiscussion, on_delete=models.CASCADE, related_name='posts', null=True, blank=True)
+    topic_discussion = models.ForeignKey(TopicDiscussion, on_delete=models.CASCADE, related_name='posts', null=True, blank=True)
+
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='discussion_posts')
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    attachment = models.FileField(upload_to='discussion_attachments/', blank=True, null=True)
+
+    # Threading support
+    parent_post = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
+
+    # Moderation
+    is_pinned = models.BooleanField(default=False, help_text="Pin important posts to the top")
+    is_locked = models.BooleanField(default=False, help_text="Lock post to prevent further replies")
+    is_approved = models.BooleanField(default=True, help_text="Approve post for visibility")
+
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    edited_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-is_pinned', '-created_at']
+        verbose_name = "Discussion Post"
+        verbose_name_plural = "Discussion Posts"
+
+    def __str__(self):
+        return f"{self.author.username}: {self.title}"
+
+    def save(self, *args, **kwargs):
+        # Ensure only one discussion type is set
+        if self.module_discussion and self.topic_discussion:
+            raise ValueError("Post cannot belong to both module and topic discussions")
+        if not self.module_discussion and not self.topic_discussion:
+            raise ValueError("Post must belong to either module or topic discussion")
+        super().save(*args, **kwargs)
+
+    @property
+    def is_reply(self):
+        return self.parent_post is not None
+
+    @property
+    def reply_count(self):
+        return self.replies.filter(is_approved=True).count()
+
+    @property
+    def discussion(self):
+        return self.module_discussion or self.topic_discussion
+
+    def can_edit(self, user):
+        """Check if user can edit this post"""
+        return user == self.author or user.is_staff
+
+    def can_reply(self, user):
+        """Check if user can reply to this post"""
+        return not self.is_locked and self.is_approved
+
+
+class DiscussionLike(models.Model):
+    """Likes/reactions on discussion posts"""
+    post = models.ForeignKey(DiscussionPost, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='discussion_likes')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ['post', 'user']
+        verbose_name = "Discussion Like"
+        verbose_name_plural = "Discussion Likes"
+
+    def __str__(self):
+        return f"{self.user.username} likes {self.post.title}"
+
+
+class DiscussionView(models.Model):
+    """Track who has viewed which discussions"""
+    # Either module or topic discussion
+    module_discussion = models.ForeignKey(ModuleDiscussion, on_delete=models.CASCADE, related_name='views', null=True, blank=True)
+    topic_discussion = models.ForeignKey(TopicDiscussion, on_delete=models.CASCADE, related_name='views', null=True, blank=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='discussion_views')
+    last_viewed_at = models.DateTimeField(default=timezone.now)
+    last_post_seen = models.ForeignKey(DiscussionPost, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        unique_together = [
+            ['module_discussion', 'user'],
+            ['topic_discussion', 'user']
+        ]
+        verbose_name = "Discussion View"
+        verbose_name_plural = "Discussion Views"
+
+    def __str__(self):
+        discussion = self.module_discussion or self.topic_discussion
+        return f"{self.user.username} viewed {discussion}"
+
+
+
+    last_viewed_at = models.DateTimeField(default=timezone.now)
+    last_post_seen = models.ForeignKey(DiscussionPost, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        unique_together = [
+            ['module_discussion', 'user'],
+            ['topic_discussion', 'user']
+        ]
+        verbose_name = "Discussion View"
+        verbose_name_plural = "Discussion Views"
+
+    def __str__(self):
+        discussion = self.module_discussion or self.topic_discussion
+        return f"{self.user.username} viewed {discussion}"
 
