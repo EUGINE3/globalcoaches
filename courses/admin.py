@@ -313,24 +313,61 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(LessonResource)
 class LessonResourceAdmin(admin.ModelAdmin):
-    list_display = ('lesson', 'title', 'resource_type_badge', 'required_status', 'estimated_duration_minutes', 'order', 'is_required', 'is_active')
-    list_filter = ('resource_type', 'is_required', 'lesson__topic__program_module__program_level', 'is_active')
-    search_fields = ('title', 'description', 'lesson__title')
+    list_display = ('lesson', 'resource_name', 'resource_type_display', 'required_status', 'order', 'is_required', 'is_active')
+    list_filter = ('is_required', 'lesson__topic__program_module__program_level', 'is_active')
+    search_fields = ('lesson__title', 'content')
     raw_id_fields = ('lesson',)
     list_editable = ('order', 'is_required')
     ordering = ('lesson', 'order')
 
     fieldsets = (
         ('Basic Information', {
-            'fields': ('lesson', 'title', 'description', 'resource_type')
+            'fields': ('lesson',)
         }),
         ('Content', {
             'fields': ('content', 'file', 'url')
         }),
         ('Settings', {
-            'fields': ('is_required', 'estimated_duration_minutes', 'order', 'is_active')
+            'fields': ('is_required', 'order', 'is_active')
         }),
     )
+
+    def resource_name(self, obj):
+        """Display the resource name (filename or URL)"""
+        if obj.file:
+            filename = obj.get_resource_name()
+            return format_html('<span style="color: #007bff;">📄 {}</span>', filename)
+        elif obj.url:
+            return format_html('<span style="color: #28a745;">🔗 Link</span>')
+        return format_html('<span style="color: #6c757d;">No file/URL</span>')
+    resource_name.short_description = 'Resource Name'
+
+    def resource_type_display(self, obj):
+        """Display the resource type with appropriate icon"""
+        resource_type = obj.get_resource_type_display()
+        colors = {
+            'Video': '#ff6b6b',
+            'Document': '#4ecdc4', 
+            'Presentation': '#45b7d1',
+            'Audio': '#96ceb4',
+            'File': '#feca57',
+            'External Link': '#a55eea'
+        }
+        icons = {
+            'Video': '🎥',
+            'Document': '📄',
+            'Presentation': '📊',
+            'Audio': '🎵',
+            'File': '📁',
+            'External Link': '🔗'
+        }
+        color = colors.get(resource_type, '#95a5a6')
+        icon = icons.get(resource_type, '❓')
+        return format_html(
+            '<span style="background-color: {}; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px;">{} {}</span>',
+            color, icon, resource_type
+        )
+    resource_type_display.short_description = 'Type'
 
     def resource_type_badge(self, obj):
         colors = {

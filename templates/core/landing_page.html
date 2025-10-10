@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% load static %} {% block title %}Global Coaches Academy - Transforming Leaders for Global Impact{% endblock %} {% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% block title %}Global Coaches Academy - Transforming Leaders for Global
+Impact{% endblock %} {% block extra_css %}
 <style>
     .hero-section {
         background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(30, 64, 175, 0.9)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
@@ -10,12 +11,12 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .hero-content {
         position: relative;
         z-index: 2;
     }
-    
+
     .hero-title {
         font-size: 3.5rem;
         font-weight: 700;
@@ -23,21 +24,21 @@
         margin-bottom: 1.5rem;
         color: white;
     }
-    
+
     .hero-subtitle {
         font-size: 1.25rem;
         color: rgba(255, 255, 255, 0.9);
         margin-bottom: 2rem;
         max-width: 600px;
     }
-    
+
     .cta-buttons {
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
         margin-bottom: 3rem;
     }
-    
+
     .btn-hero {
         padding: 15px 30px;
         font-size: 1.1rem;
@@ -49,39 +50,39 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .btn-hero-primary {
         background: rgba(255, 255, 255, 0.2);
         color: white;
         border: 2px solid rgba(255, 255, 255, 0.3);
         backdrop-filter: blur(10px);
     }
-    
+
     .btn-hero-primary:hover {
         background: rgba(255, 255, 255, 0.3);
         transform: translateY(-3px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         color: white;
     }
-    
+
     .btn-hero-secondary {
         background: rgba(245, 158, 11, 0.9);
         color: white;
         border: 2px solid transparent;
     }
-    
+
     .btn-hero-secondary:hover {
         background: #f59e0b;
         transform: translateY(-3px);
         box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
         color: white;
     }
-    
+
     .partners-section {
         background: var(--bg-light);
         padding: 60px 0;
     }
-    
+
     .partner-logo {
         height: 60px;
         object-fit: contain;
@@ -89,36 +90,36 @@
         opacity: 0.7;
         transition: all 0.3s ease;
     }
-    
+
     .partner-logo:hover {
         filter: grayscale(0%);
         opacity: 1;
         transform: scale(1.1);
     }
-    
+
     .stats-section {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         color: white;
         padding: 80px 0;
     }
-    
+
     .stat-item {
         text-align: center;
         margin-bottom: 2rem;
     }
-    
+
     .stat-number {
         font-size: 3rem;
         font-weight: 700;
         display: block;
         margin-bottom: 0.5rem;
     }
-    
+
     .stat-label {
         font-size: 1.1rem;
         opacity: 0.9;
     }
-    
+
     .testimonial-card {
         background: white;
         border-radius: 20px;
@@ -127,39 +128,39 @@
         margin-bottom: 2rem;
         position: relative;
     }
-    
+
     .testimonial-quote {
         font-size: 1.1rem;
         line-height: 1.6;
         margin-bottom: 1.5rem;
         color: var(--text-dark);
     }
-    
+
     .testimonial-author {
         display: flex;
         align-items: center;
         gap: 1rem;
     }
-    
+
     .author-avatar {
         width: 60px;
         height: 60px;
         border-radius: 50%;
         object-fit: cover;
     }
-    
+
     .author-info h6 {
         margin: 0;
         color: var(--text-dark);
         font-weight: 600;
     }
-    
+
     .author-info p {
         margin: 0;
         color: var(--text-light);
         font-size: 0.9rem;
     }
-    
+
     .quote-icon {
         position: absolute;
         top: -10px;
@@ -174,15 +175,17 @@
         justify-content: center;
         font-size: 1.2rem;
     }
-    
+
     @media (max-width: 768px) {
         .hero-title {
             font-size: 2.5rem;
         }
+
         .cta-buttons {
             flex-direction: column;
             align-items: center;
         }
+
         .btn-hero {
             width: 100%;
             max-width: 300px;
@@ -198,7 +201,8 @@
             <div class="col-lg-8 hero-content animate-fade-in">
                 <h1 class="hero-title">Transform Your Leadership Journey</h1>
                 <p class="hero-subtitle">
-                    The Global Coaches Program is a 3-tier training pathway designed to raise Spirit-led, system-aware, and purpose-driven leaders who multiply transformation in their communities.
+                    The Global Coaches Program is a 3-tier training pathway designed to raise Spirit-led, system-aware,
+                    and purpose-driven leaders who multiply transformation in their communities.
                 </p>
 
                 <div class="cta-buttons">
@@ -209,8 +213,17 @@
                         <i class="fas fa-rocket"></i> Join Program
                     </a>
                     {% if not user.is_authenticated %}
-                    <a href="{% url 'core:login' %}" class="btn-hero btn-hero-primary">
-                        <i class="fas fa-sign-in-alt"></i> Login
+                    <a href="{% url 'authentication:login_student' %}" class="btn-hero btn-hero-primary">
+                        <i class="fas fa-user-graduate"></i> Login as Student
+                    </a>
+                    <a href="{% url 'authentication:login_trainer' %}" class="btn-hero btn-hero-primary">
+                        <i class="fas fa-chalkboard-teacher"></i> Login as Trainer
+                    </a>
+                    <a href="{% url 'authentication:register_student' %}" class="btn-hero btn-hero-secondary">
+                        <i class="fas fa-user-plus"></i> Register as Student
+                    </a>
+                    <a href="{% url 'authentication:register_trainer' %}" class="btn-hero btn-hero-secondary">
+                        <i class="fas fa-user-tie"></i> Register as Trainer
                     </a>
                     {% endif %}
                 </div>
@@ -268,7 +281,9 @@
                         </div>
                         <h5 class="card-title">Certificate Level</h5>
                         <p class="card-text">
-                            Provides a strong foundation in all core areas (faith, leadership, SDGs, education, climate, diplomacy, entrepreneurship). Every participant graduates as a well-rounded coach with exposure to all modules.
+                            Provides a strong foundation in all core areas (faith, leadership, SDGs, education, climate,
+                            diplomacy, entrepreneurship). Every participant graduates as a well-rounded coach with
+                            exposure to all modules.
                         </p>
                     </div>
                 </div>
@@ -282,7 +297,8 @@
                         </div>
                         <h5 class="card-title">Diploma Level</h5>
                         <p class="card-text">
-                            Focuses on deeper practice, applied coaching, and community-based projects. Coaches engage in real projects that combine multiple disciplines and demonstrate measurable impact.
+                            Focuses on deeper practice, applied coaching, and community-based projects. Coaches engage
+                            in real projects that combine multiple disciplines and demonstrate measurable impact.
                         </p>
                     </div>
                 </div>
@@ -296,7 +312,8 @@
                         </div>
                         <h5 class="card-title">Advanced Diploma Level</h5>
                         <p class="card-text">
-                            Coaches step into leadership, mentorship, and multiplication roles. Participants refine their specialization while remaining grounded in the holistic Global Coaches framework.
+                            Coaches step into leadership, mentorship, and multiplication roles. Participants refine
+                            their specialization while remaining grounded in the holistic Global Coaches framework.
                         </p>
                     </div>
                 </div>
@@ -310,7 +327,8 @@
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="text-gradient mb-3">Integrated Module Approach</h2>
-            <p class="text-muted">Instead of separating into 7 different categories, we have blended them into modules that cut across all levels</p>
+            <p class="text-muted">Instead of separating into 7 different categories, we have blended them into modules
+                that cut across all levels</p>
         </div>
 
         <div class="row">
@@ -394,7 +412,8 @@
 
         <div class="text-center mt-4">
             <p class="text-muted">
-                Each level (Certificate, Diploma, Advanced Diploma) builds on these modules with increasing depth and practice.
+                Each level (Certificate, Diploma, Advanced Diploma) builds on these modules with increasing depth and
+                practice.
             </p>
         </div>
     </div>
@@ -410,27 +429,32 @@
 
         <div class="row align-items-center justify-content-center">
             <div class="col-lg-2 col-md-3 col-6 text-center mb-4">
-                <div class="partner-placeholder" style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
+                <div class="partner-placeholder"
+                    style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
                     ICY Africa
                 </div>
             </div>
             <div class="col-lg-2 col-md-3 col-6 text-center mb-4">
-                <div class="partner-placeholder" style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
+                <div class="partner-placeholder"
+                    style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
                     Africa for SDGs
                 </div>
             </div>
             <div class="col-lg-2 col-md-3 col-6 text-center mb-4">
-                <div class="partner-placeholder" style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
+                <div class="partner-placeholder"
+                    style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
                     LADA
                 </div>
             </div>
             <div class="col-lg-2 col-md-3 col-6 text-center mb-4">
-                <div class="partner-placeholder" style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
+                <div class="partner-placeholder"
+                    style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
                     UN SDGs
                 </div>
             </div>
             <div class="col-lg-2 col-md-3 col-6 text-center mb-4">
-                <div class="partner-placeholder" style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
+                <div class="partner-placeholder"
+                    style="height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
                     Global Impact
                 </div>
             </div>
@@ -453,10 +477,12 @@
                         <i class="fas fa-quote-left"></i>
                     </div>
                     <p class="testimonial-quote">
-                        "Global Coaches Academy transformed my understanding of leadership and gave me the tools to create meaningful change in my community. The mentorship program was invaluable."
+                        "Global Coaches Academy transformed my understanding of leadership and gave me the tools to
+                        create meaningful change in my community. The mentorship program was invaluable."
                     </p>
                     <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        <div class="author-avatar"
+                            style="background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
                             SA
                         </div>
                         <div class="author-info">
@@ -473,10 +499,12 @@
                         <i class="fas fa-quote-left"></i>
                     </div>
                     <p class="testimonial-quote">
-                        "As a mentor, I've witnessed incredible growth in our students. The curriculum is comprehensive and the community support is exceptional. Truly life-changing."
+                        "As a mentor, I've witnessed incredible growth in our students. The curriculum is comprehensive
+                        and the community support is exceptional. Truly life-changing."
                     </p>
                     <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        <div class="author-avatar"
+                            style="background: linear-gradient(135deg, #f093fb, #f5576c); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
                             DM
                         </div>
                         <div class="author-info">
@@ -493,10 +521,12 @@
                         <i class="fas fa-quote-left"></i>
                     </div>
                     <p class="testimonial-quote">
-                        "The entrepreneurship program equipped me with both the spiritual foundation and practical skills needed to launch my social enterprise. Forever grateful!"
+                        "The entrepreneurship program equipped me with both the spiritual foundation and practical
+                        skills needed to launch my social enterprise. Forever grateful!"
                     </p>
                     <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #4facfe, #00f2fe); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        <div class="author-avatar"
+                            style="background: linear-gradient(135deg, #4facfe, #00f2fe); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
                             EK
                         </div>
                         <div class="author-info">
@@ -517,7 +547,8 @@
             <div class="col-lg-8">
                 <h2 class="text-gradient mb-3">Ready to Transform Your Leadership Journey?</h2>
                 <p class="text-muted mb-4">
-                    Join thousands of leaders who are making a global impact through our comprehensive 3-tier program. Progress through Certificate, Diploma, and Advanced Diploma levels with 7 integrated modules.
+                    Join thousands of leaders who are making a global impact through our comprehensive 3-tier program.
+                    Progress through Certificate, Diploma, and Advanced Diploma levels with 7 integrated modules.
                 </p>
             </div>
             <div class="col-lg-4 text-lg-end">
@@ -534,7 +565,7 @@
 {% endblock %} {% block extra_js %}
 <script>
     // Add smooth scrolling and animations
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Animate stats on scroll
         const stats = document.querySelectorAll('.stat-number');
         const animateStats = () => {

@@ -6,7 +6,11 @@ app_name = 'authentication'
 urlpatterns = [
     # Authentication views
     path('register/', views.register_view, name='register'),
+    path('register/student/', views.register_student, name='register_student'),
+    path('register/trainer/', views.register_trainer, name='register_trainer'),
     path('login/', views.login_view, name='login'),
+    path('login/student/', views.login_student, name='login_student'),
+    path('login/trainer/', views.login_trainer, name='login_trainer'),
     path('logout/', views.logout_view, name='logout'),
     
     # Email verification

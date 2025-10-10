@@ -156,8 +156,6 @@ def lesson_resource_upload_path(instance, filename):
 class LessonResource(models.Model):
     """Resources for individual lessons"""
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='resources')
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
 
     # Resource type and content
     RESOURCE_TYPES = [
@@ -169,7 +167,7 @@ class LessonResource(models.Model):
         ('audio', 'Audio'),
         ('interactive', 'Interactive Content'),
     ]
-    resource_type = models.CharField(max_length=20, choices=RESOURCE_TYPES)
+    # resource_type = models.CharField(max_length=20, choices=RESOURCE_TYPES)
 
     # Content fields
     content = models.TextField(blank=True, help_text="Text content or description")
@@ -178,7 +176,7 @@ class LessonResource(models.Model):
 
     # Settings
     is_required = models.BooleanField(default=True, help_text="Required for lesson completion")
-    estimated_duration_minutes = models.IntegerField(default=15, help_text="Estimated time to complete")
+    # estimated_duration_minutes = models.IntegerField(default=15, help_text="Estimated time to complete")
     order = models.IntegerField(default=0, help_text="Display order within lesson")
 
     is_active = models.BooleanField(default=True)
@@ -191,13 +189,54 @@ class LessonResource(models.Model):
         verbose_name_plural = "Lesson Resources"
 
     def __str__(self):
-        return f"{self.lesson.title} - {self.title}"
+        if self.file:
+            filename = os.path.basename(self.file.name)
+            return f"{self.lesson.title} - {filename}"
+        elif self.url:
+            return f"{self.lesson.title} - Link"
+        else:
+            return f"{self.lesson.title} - Resource"
 
     def get_file_extension(self):
         """Get file extension for display"""
         if self.file:
             return os.path.splitext(self.file.name)[1].lower()
         return None
+
+    def get_resource_name(self):
+        """Get the name of the resource (filename or URL)"""
+        if self.file:
+            return os.path.basename(self.file.name)
+        elif self.url:
+            return self.url
+        return "No file or URL"
+
+    def get_resource_type_display(self):
+        """Get the type of resource based on file extension or URL"""
+        if self.file:
+            ext = self.get_file_extension()
+            if ext:
+                if ext in ['.mp4', '.avi', '.mov', '.wmv']:
+                    return 'Video'
+                elif ext in ['.pdf', '.doc', '.docx']:
+                    return 'Document'
+                elif ext in ['.ppt', '.pptx']:
+                    return 'Presentation'
+                elif ext in ['.mp3', '.wav', '.m4a']:
+                    return 'Audio'
+                else:
+                    return 'File'
+        elif self.url:
+            return 'External Link'
+        return 'Unknown'
+
+    def has_file(self):
+        """Check if resource has a file"""
+        return bool(self.file)
+
+    def has_url(self):
+        """Check if resource has a URL"""
+        return bool(self.url)
 
 
 def assignment_upload_path(instance, filename):

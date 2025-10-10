@@ -129,17 +129,23 @@
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="flex-grow-1">
                                 <h6 class="mb-2">
-                                    <i class="fas fa-{{ resource.resource_type }} me-2"></i>
-                                    {{ resource.title }}
+                                    {% if resource.has_file %}
+                                    <i class="fas fa-file me-2"></i>
+                                    {% elif resource.has_url %}
+                                    <i class="fas fa-link me-2"></i>
+                                    {% else %}
+                                    <i class="fas fa-folder me-2"></i>
+                                    {% endif %}
+                                    {{ resource.get_resource_name }}
                                     {% if resource.progress and resource.progress.is_completed %}
                                     <i class="fas fa-check-circle text-success ms-2"></i>
                                     {% endif %}
                                 </h6>
                                 <p class="text-muted mb-2">{{ resource.content|truncatewords:20 }}</p>
                                 <small class="text-muted">
-                                    <i class="fas fa-clock me-1"></i>{{ resource.estimated_duration_minutes }} minutes
+                                    <span class="badge bg-info me-2">{{ resource.get_resource_type_display }}</span>
                                     {% if resource.is_required %}
-                                    <span class="badge bg-warning ms-2">Required</span>
+                                    <span class="badge bg-warning">Required</span>
                                     {% endif %}
                                 </small>
                             </div>

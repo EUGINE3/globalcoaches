@@ -10,41 +10,39 @@
             <div class="d-flex align-items-start gap-3">
                 <!-- Resource Icon -->
                 <div class="resource-icon">
-                    {% if resource.is_video %}
+                    {% if resource.has_file %}
+                    {% if resource.get_file_extension == '.mp4' or resource.get_file_extension == '.avi' %}
                     <i class="fas fa-play-circle text-primary" style="font-size: 1.5rem;"></i>
-                    {% elif resource.is_pdf %}
+                    {% elif resource.get_file_extension == '.pdf' %}
                     <i class="fas fa-file-pdf text-danger" style="font-size: 1.5rem;"></i>
-                    {% elif resource.resource_type == 'document' %}
+                    {% elif resource.get_file_extension == '.doc' or resource.get_file_extension == '.docx' %}
                     <i class="fas fa-file-alt text-info" style="font-size: 1.5rem;"></i>
-                    {% elif resource.resource_type == 'link' %}
-                    <i class="fas fa-external-link-alt text-success" style="font-size: 1.5rem;"></i>
                     {% else %}
                     <i class="fas fa-file text-secondary" style="font-size: 1.5rem;"></i>
+                    {% endif %}
+                    {% elif resource.has_url %}
+                    <i class="fas fa-external-link-alt text-success" style="font-size: 1.5rem;"></i>
+                    {% else %}
+                    <i class="fas fa-folder text-secondary" style="font-size: 1.5rem;"></i>
                     {% endif %}
                 </div>
 
                 <!-- Resource Content -->
                 <div class="resource-content flex-grow-1">
                     <div class="d-flex align-items-center gap-2 mb-1">
-                        <h6 class="resource-title mb-0">{{ resource.title }}</h6>
+                        <h6 class="resource-title mb-0">{{ resource.get_resource_name }}</h6>
                         {% if resource.is_required %}
                         <span class="badge bg-warning text-dark">Required</span>
                         {% endif %}
                     </div>
 
-                    {% if resource.description %}
-                    <p class="resource-description text-muted mb-2">{{ resource.description }}</p>
+                    {% if resource.content %}
+                    <p class="resource-description text-muted mb-2">{{ resource.content|truncatewords:20 }}</p>
                     {% endif %}
 
                     <!-- Resource Metadata -->
                     <div class="resource-meta d-flex align-items-center gap-3 text-sm text-muted">
-                        {% if resource.file_size %}
-                        <span><i class="fas fa-hdd me-1"></i>{{ resource.get_file_size_display }}</span>
-                        {% endif %}
-                        {% if resource.duration %}
-                        <span><i class="fas fa-clock me-1"></i>{{ resource.duration }}</span>
-                        {% endif %}
-                        <span class="text-capitalize">{{ resource.get_resource_type_display }}</span>
+                        <span class="badge bg-info">{{ resource.get_resource_type_display }}</span>
                     </div>
                 </div>
 
@@ -56,9 +54,9 @@
                     </span>
                     {% else %}
                     {% if resource.file %}
-                    {% if resource.is_video %}
+                    {% if resource.get_file_extension == '.mp4' or resource.get_file_extension == '.avi' %}
                     <button class="btn btn-primary btn-sm"
-                        onclick="playVideo('{{ resource.file.url }}', '{{ resource.title }}', {{ resource.id }})">
+                        onclick="playVideo('{{ resource.file.url }}', '{{ resource.get_resource_name }}', {{ resource.id }})">
                         <i class="fas fa-play me-1"></i>Play
                     </button>
                     {% else %}
@@ -67,8 +65,8 @@
                         <i class="fas fa-download me-1"></i>Download
                     </a>
                     {% endif %}
-                    {% elif resource.external_url %}
-                    <a href="{{ resource.external_url }}" target="_blank" class="btn btn-outline-primary btn-sm"
+                    {% elif resource.url %}
+                    <a href="{{ resource.url }}" target="_blank" class="btn btn-outline-primary btn-sm"
                         onclick="markResourceViewed({{ resource.id }})">
                         <i class="fas fa-external-link-alt me-1"></i>Open
                     </a>

@@ -107,6 +107,154 @@ def register_view(request):
 
 
 @require_http_methods(["GET", "POST"])
+def register_student(request):
+    """Register a user as Student (role-specific)"""
+    if request.user.is_authenticated:
+        return redirect('core:dashboard')
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+
+        errors = []
+        if not username:
+            errors.append('Username is required.')
+        elif User.objects.filter(username=username).exists():
+            errors.append('Username already exists.')
+
+        if not email:
+            errors.append('Email is required.')
+        elif User.objects.filter(email=email).exists():
+            errors.append('Email already registered.')
+
+        if not password1:
+            errors.append('Password is required.')
+        elif password1 != password2:
+            errors.append('Passwords do not match.')
+        else:
+            try:
+                validate_password(password1)
+            except ValidationError as e:
+                errors.extend(e.messages)
+
+        if not first_name:
+            errors.append('First name is required.')
+        if not last_name:
+            errors.append('Last name is required.')
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'authentication/register.html', {
+                'username': username,
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                'role': 'student',
+            })
+
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password1,
+                first_name=first_name,
+                last_name=last_name,
+                is_active=True
+            )
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            profile.is_student = True
+            profile.save()
+
+            send_welcome_email(user)
+            messages.success(request, 'Student account created. Please log in.')
+            return redirect('authentication:login_student')
+        except Exception as e:
+            logger.error(f"Student registration error: {e}")
+            messages.error(request, 'Registration failed. Please try again.')
+
+    return render(request, 'authentication/register.html', {'role': 'student'})
+
+
+@require_http_methods(["GET", "POST"])
+def register_trainer(request):
+    """Register a user as Trainer (role-specific)"""
+    if request.user.is_authenticated:
+        return redirect('core:dashboard')
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+
+        errors = []
+        if not username:
+            errors.append('Username is required.')
+        elif User.objects.filter(username=username).exists():
+            errors.append('Username already exists.')
+
+        if not email:
+            errors.append('Email is required.')
+        elif User.objects.filter(email=email).exists():
+            errors.append('Email already registered.')
+
+        if not password1:
+            errors.append('Password is required.')
+        elif password1 != password2:
+            errors.append('Passwords do not match.')
+        else:
+            try:
+                validate_password(password1)
+            except ValidationError as e:
+                errors.extend(e.messages)
+
+        if not first_name:
+            errors.append('First name is required.')
+        if not last_name:
+            errors.append('Last name is required.')
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'authentication/register.html', {
+                'username': username,
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                'role': 'trainer',
+            })
+
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password1,
+                first_name=first_name,
+                last_name=last_name,
+                is_active=True
+            )
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            profile.is_trainer = True
+            profile.save()
+
+            send_welcome_email(user)
+            messages.success(request, 'Trainer account created. Please log in.')
+            return redirect('authentication:login_trainer')
+        except Exception as e:
+            logger.error(f"Trainer registration error: {e}")
+            messages.error(request, 'Registration failed. Please try again.')
+
+    return render(request, 'authentication/register.html', {'role': 'trainer'})
+
+
+@require_http_methods(["GET", "POST"])
 def login_view(request):
     """User login with rate limiting"""
     if request.user.is_authenticated:
@@ -147,6 +295,82 @@ def login_view(request):
         return render(request, 'authentication/login.html', {'username': username})
 
     return render(request, 'authentication/login.html')
+
+
+@require_http_methods(["GET", "POST"])
+def login_student(request):
+    """Login restricted to Student role"""
+    if request.user.is_authenticated:
+        return redirect('core:dashboard')
+
+    if is_rate_limited(request, 'login'):
+        messages.error(request, 'Too many failed login attempts. Please try again later.')
+        return render(request, 'authentication/login.html', {'role': 'student'})
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        if not username or not password:
+            messages.error(request, 'Please enter both username and password.')
+            return render(request, 'authentication/login.html', {'username': username, 'role': 'student'})
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_active:
+            profile = UserProfile.objects.filter(user=user).first()
+            if profile and profile.is_student:
+                login(request, user)
+                log_login_attempt(username, request, success=True)
+                next_url = request.GET.get('next', 'core:dashboard')
+                messages.success(request, f'Welcome back, {user.first_name}!')
+                return redirect(next_url)
+            else:
+                messages.error(request, 'This portal is for students only.')
+        else:
+            log_login_attempt(username, request, success=False)
+            messages.error(request, 'Invalid username or password.')
+
+        return render(request, 'authentication/login.html', {'username': username, 'role': 'student'})
+
+    return render(request, 'authentication/login.html', {'role': 'student'})
+
+
+@require_http_methods(["GET", "POST"])
+def login_trainer(request):
+    """Login restricted to Trainer role"""
+    if request.user.is_authenticated:
+        return redirect('core:dashboard')
+
+    if is_rate_limited(request, 'login'):
+        messages.error(request, 'Too many failed login attempts. Please try again later.')
+        return render(request, 'authentication/login.html', {'role': 'trainer'})
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        if not username or not password:
+            messages.error(request, 'Please enter both username and password.')
+            return render(request, 'authentication/login.html', {'username': username, 'role': 'trainer'})
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_active:
+            profile = UserProfile.objects.filter(user=user).first()
+            if profile and profile.is_trainer:
+                login(request, user)
+                log_login_attempt(username, request, success=True)
+                next_url = request.GET.get('next', 'core:dashboard')
+                messages.success(request, f'Welcome back, {user.first_name}!')
+                return redirect(next_url)
+            else:
+                messages.error(request, 'This portal is for trainers only.')
+        else:
+            log_login_attempt(username, request, success=False)
+            messages.error(request, 'Invalid username or password.')
+
+        return render(request, 'authentication/login.html', {'username': username, 'role': 'trainer'})
+
+    return render(request, 'authentication/login.html', {'role': 'trainer'})
 
 
 def logout_view(request):

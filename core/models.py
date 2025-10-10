@@ -263,6 +263,8 @@ class UserProfile(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     is_mentor = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=False)
+    is_trainer = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
