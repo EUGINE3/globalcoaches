@@ -1,0 +1,84 @@
+{% load progress_tags %}
+
+<div class="progress-circle-container">
+    <div class="progress-circle progress-{{ size }}" data-percentage="{{ percentage }}">
+        <svg class="progress-circle-svg" viewBox="0 0 100 100">
+            <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
+            <circle class="progress-circle-fill" cx="50" cy="50" r="45"
+                style="stroke: {{ color }}; stroke-dasharray: {{ percentage|mul:2.827 }} 283;">
+            </circle>
+        </svg> {% if show_text %}
+        <div class="progress-circle-text">
+            <span class="progress-circle-percentage">{{ percentage|floatformat:0 }}%</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .progress-circle-container {
+        display: inline-block;
+        position: relative;
+    }
+    
+    .progress-circle {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .progress-circle.small {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .progress-circle.medium {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .progress-circle.large {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .progress-circle-svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+    }
+    
+    .progress-circle-bg {
+        fill: none;
+        stroke: #e9ecef;
+        stroke-width: 8;
+    }
+    
+    .progress-circle-fill {
+        fill: none;
+        stroke-width: 8;
+        stroke-linecap: round;
+        transition: stroke-dasharray 0.3s ease;
+    }
+    
+    .progress-circle-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    
+    .progress-circle-percentage {
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+    
+    .progress-circle.small .progress-circle-percentage {
+        font-size: 0.8rem;
+    }
+    
+    .progress-circle.large .progress-circle-percentage {
+        font-size: 1.1rem;
+    }
+</style>

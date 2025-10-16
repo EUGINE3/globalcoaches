@@ -412,6 +412,7 @@ class CompletionTracker:
 
         was_completed = module_progress.is_completed
         module_progress.progress_percentage = percentage
+        module_progress.completion_percentage = percentage  # Keep in sync
 
         if percentage >= program_module.minimum_completion_percentage:
             module_progress.is_completed = True

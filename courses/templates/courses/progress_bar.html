@@ -1,0 +1,84 @@
+{% load progress_tags %}
+
+<div class="progress-container">
+    <div class="progress-bar progress-{{ size }} {{ display_class }}">
+        <div class="progress-fill" style="width: {{ percentage }}%; background-color: {{ color }};" data-percentage="{{ percentage }}">
+        </div>
+    </div>
+    {% if show_text %}
+    <div class="progress-text">
+        <span class="progress-percentage">{{ percentage|floatformat:0 }}%</span>
+        <span class="progress-label">Complete</span>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .progress-container {
+        margin: 10px 0;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .progress-bar.small {
+        height: 4px;
+    }
+    
+    .progress-bar.medium {
+        height: 8px;
+    }
+    
+    .progress-bar.large {
+        height: 12px;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        transition: width 0.3s ease;
+        border-radius: 4px;
+    }
+    
+    .progress-text {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 5px;
+        font-size: 0.9rem;
+    }
+    
+    .progress-percentage {
+        font-weight: bold;
+        color: #495057;
+    }
+    
+    .progress-label {
+        color: #6c757d;
+    }
+    /* Progress state classes */
+    
+    .progress-complete .progress-fill {
+        background: linear-gradient(90deg, #28a745, #20c997) !important;
+    }
+    
+    .progress-high .progress-fill {
+        background: linear-gradient(90deg, #20c997, #17a2b8) !important;
+    }
+    
+    .progress-medium .progress-fill {
+        background: linear-gradient(90deg, #17a2b8, #ffc107) !important;
+    }
+    
+    .progress-low .progress-fill {
+        background: linear-gradient(90deg, #ffc107, #fd7e14) !important;
+    }
+    
+    .progress-minimal .progress-fill {
+        background: linear-gradient(90deg, #fd7e14, #dc3545) !important;
+    }
+</style>

@@ -1,9 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}My Learning Path - Global Coaches Academy{% endblock %}
-
-{% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% load progress_tags %} {% block title %}My Learning Path - Global Coaches Academy{% endblock %} {% block extra_css %}
 <style>
     .learning-path {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -11,11 +6,11 @@
         padding: 60px 0;
         text-align: center;
     }
-
+    
     .module-progression {
         padding: 40px 0;
     }
-
+    
     .module-card {
         background: white;
         border-radius: 15px;
@@ -26,25 +21,25 @@
         position: relative;
         overflow: hidden;
     }
-
+    
     .module-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
-
+    
     .module-card.locked {
         background: #f8f9fa;
         opacity: 0.7;
     }
-
+    
     .module-card.completed {
         border-left: 5px solid #28a745;
     }
-
+    
     .module-card.unlocked {
         border-left: 5px solid #007bff;
     }
-
+    
     .module-status {
         position: absolute;
         top: 15px;
@@ -55,22 +50,22 @@
         font-weight: bold;
         text-transform: uppercase;
     }
-
+    
     .status-locked {
         background: #6c757d;
         color: white;
     }
-
+    
     .status-unlocked {
         background: #007bff;
         color: white;
     }
-
+    
     .status-completed {
         background: #28a745;
         color: white;
     }
-
+    
     .module-sequence {
         display: inline-block;
         width: 40px;
@@ -83,15 +78,15 @@
         font-weight: bold;
         margin-right: 15px;
     }
-
+    
     .module-sequence.completed {
         background: #28a745;
     }
-
+    
     .module-sequence.locked {
         background: #6c757d;
     }
-
+    
     .progress-bar {
         width: 100%;
         height: 8px;
@@ -100,19 +95,19 @@
         overflow: hidden;
         margin: 15px 0;
     }
-
+    
     .progress-fill {
         height: 100%;
         background: linear-gradient(90deg, #28a745, #20c997);
         transition: width 0.3s ease;
     }
-
+    
     .prerequisites {
         margin-top: 15px;
         padding-top: 15px;
         border-top: 1px solid #dee2e6;
     }
-
+    
     .prerequisite-item {
         display: inline-block;
         background: #f8f9fa;
@@ -121,16 +116,16 @@
         margin: 2px;
         font-size: 12px;
     }
-
+    
     .prerequisite-item.completed {
         background: #d4edda;
         color: #155724;
     }
-
+    
     .module-actions {
         margin-top: 20px;
     }
-
+    
     .btn-module {
         padding: 10px 20px;
         border-radius: 25px;
@@ -140,34 +135,34 @@
         margin-right: 10px;
         transition: all 0.3s ease;
     }
-
+    
     .btn-module:hover {
         transform: translateY(-2px);
         text-decoration: none;
     }
-
+    
     .btn-module.disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
-
+    
     .learning-stats {
         background: #f8f9fa;
         padding: 30px 0;
         margin-bottom: 30px;
     }
-
+    
     .stat-card {
         text-align: center;
         padding: 20px;
     }
-
+    
     .stat-number {
         font-size: 2.5rem;
         font-weight: bold;
         color: #667eea;
     }
-
+    
     .stat-label {
         color: #6c757d;
         font-size: 0.9rem;
@@ -175,9 +170,7 @@
         letter-spacing: 1px;
     }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <!-- Learning Path Header -->
 <section class="learning-path">
     <div class="container">
@@ -234,12 +227,9 @@
                 <div class="module-card {{ item.status }}">
                     <div class="module-status status-{{ item.status }}">
                         {% if item.status == 'completed' %}
-                        <i class="fas fa-check"></i> Completed
-                        {% elif item.status == 'unlocked' %}
-                        <i class="fas fa-unlock"></i> Available
-                        {% else %}
-                        <i class="fas fa-lock"></i> Locked
-                        {% endif %}
+                        <i class="fas fa-check"></i> Completed {% elif item.status == 'unlocked' %}
+                        <i class="fas fa-unlock"></i> Available {% else %}
+                        <i class="fas fa-lock"></i> Locked {% endif %}
                     </div>
 
                     <div class="d-flex align-items-start">
@@ -250,38 +240,25 @@
                             <h5 class="mb-2">{{ item.module.module.name }}</h5>
                             <p class="text-muted mb-3">{{ item.module.module.description|truncatewords:20 }}</p>
 
-                            {% if item.progress %}
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: {{ item.completion_percentage|default:0 }}%">
-                                </div>
-                            </div>
-                            <small class="text-muted">Progress: {{ item.completion_percentage|default:0|floatformat:0
-                                }}%</small>
-                            {% endif %}
-
-                            {% if item.prerequisites %}
+                            {% if item.progress %} {% progress_bar item.completion_percentage|default:0 %} {% endif %} {% if item.prerequisites %}
                             <div class="prerequisites">
-                                <small class="text-muted d-block mb-2">Prerequisites:</small>
-                                {% for prereq in item.prerequisites %}
+                                <small class="text-muted d-block mb-2">Prerequisites:</small> {% for prereq in item.prerequisites %}
                                 <span class="prerequisite-item {% if prereq.completed %}completed{% endif %}">
                                     {% if prereq.completed %}<i class="fas fa-check me-1"></i>{% endif %}
                                     {{ prereq.module.module.name }}
-                                </span>
-                                {% endfor %}
+                                </span> {% endfor %}
                             </div>
                             {% endif %}
 
                             <div class="module-actions">
                                 {% if item.can_access %}
-                                <a href="{% url 'courses:module_detail' item.module.id %}"
-                                    class="btn btn-primary btn-module">
+                                <a href="{% url 'courses:module_detail' item.module.id %}" class="btn btn-primary btn-module">
                                     <i class="fas fa-play me-2"></i>Continue Learning
                                 </a>
                                 {% else %}
                                 <span class="btn btn-secondary btn-module disabled">
                                     <i class="fas fa-lock me-2"></i>Complete Prerequisites
-                                </span>
-                                {% endif %}
+                                </span> {% endif %}
 
                                 <small class="d-block mt-2 text-muted">
                                     {{ item.module.credits }} credits • {{ item.module.depth_level|title }} Level
@@ -295,12 +272,10 @@
         </div>
     </div>
 </section>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
     // Add animation on scroll
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const cards = document.querySelectorAll('.module-card');
 
         const animateCards = () => {

@@ -589,6 +589,7 @@ class ModuleProgress(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     program_module = models.ForeignKey(ProgramModule, on_delete=models.CASCADE)
     progress_percentage = models.FloatField(default=0.0)
+    completion_percentage = models.FloatField(default=0.0, help_text="Alias for progress_percentage for template compatibility")
     is_completed = models.BooleanField(default=False)
     completed_at = models.DateTimeField(null=True, blank=True)
     last_accessed = models.DateTimeField(auto_now=True)
@@ -603,6 +604,11 @@ class ModuleProgress(models.Model):
 
     def __str__(self):
         return f"{self.student.username} - {self.program_module}"
+
+    def save(self, *args, **kwargs):
+        """Ensure completion_percentage is always in sync with progress_percentage"""
+        self.completion_percentage = self.progress_percentage
+        super().save(*args, **kwargs)
 
     def calculate_progress(self):
         """Calculate progress based on completed topics and resources"""
@@ -627,6 +633,7 @@ class ModuleProgress(models.Model):
 
         progress = (completed_resources / total_resources) * 100
         self.progress_percentage = progress
+        self.completion_percentage = progress  # Keep in sync
 
         # Check if module should be marked as completed
         if progress >= self.program_module.minimum_completion_percentage:

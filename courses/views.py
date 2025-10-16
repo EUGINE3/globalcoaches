@@ -11,6 +11,7 @@ from .models import (
     Lesson, LessonProgress, ResourceProgress
 )
 from .utils import ProgressiveAccessManager, CompletionTracker
+from .progress_utils import ProgressCalculator
 from students.models import StudentEnrollment
 
 def program_overview(request):
@@ -149,13 +150,9 @@ def lesson_detail(request, lesson_id):
         messages.error(request, 'You need to complete previous lessons before accessing this content.')
         return redirect('courses:module_detail', module_id=lesson.topic.program_module.id)
 
-    # Get or create lesson progress
-    lesson_progress, created = LessonProgress.objects.get_or_create(
-        student=request.user,
-        lesson=lesson,
-        defaults={'started_at': timezone.now()}
-    )
-
+    # Get or create lesson progress and calculate completion
+    lesson_progress = ProgressCalculator.update_lesson_progress(request.user, lesson)
+    
     # Update last accessed time
     lesson_progress.last_accessed = timezone.now()
     lesson_progress.save()
@@ -390,20 +387,17 @@ def mark_lesson_completed(request, lesson_id):
     if not ProgressiveAccessManager.can_access_lesson(request.user, lesson):
         return JsonResponse({'error': 'Access denied'}, status=403)
 
-    # Update or create lesson progress
-    progress, _ = LessonProgress.objects.get_or_create(
-        student=request.user,
-        lesson=lesson,
-        defaults={'started_at': timezone.now()}
-    )
-    progress.is_started = True
+    # Update lesson progress using the progress calculator
+    progress = ProgressCalculator.update_lesson_progress(request.user, lesson)
+    
+    # Force completion if manually marked
     progress.is_completed = True
     progress.completion_percentage = 100.0
     progress.completed_at = timezone.now()
     progress.save()
 
     # Update module progress based on lesson completion
-    CompletionTracker.update_module_progress_from_lessons(request.user, lesson.topic.program_module)
+    ProgressCalculator.update_module_progress(request.user, lesson.topic.program_module)
 
     return JsonResponse({'success': True})
 
@@ -447,6 +441,7 @@ def student_progress_overview(request):
                 'progress': progress,
                 'accessible': accessible,
                 'progress_percentage': progress.progress_percentage if progress else 0,
+                'completion_percentage': progress.completion_percentage if progress else 0,
                 'is_completed': progress.is_completed if progress else False
             })
 
