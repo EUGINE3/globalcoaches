@@ -220,8 +220,8 @@
                         <div class="form-group">
                             <label for="password1" class="form-label">Password *</label>
                             <div class="password-input-wrapper">
-                                <input type="password" class="form-control" id="password1" name="password1" required>
-                                <button type="button" class="password-toggle" onclick="togglePassword('password1')">
+                                <input type="password" class="form-control" id="password1" name="password1" required autocomplete="new-password">
+                                <button type="button" class="password-toggle" onclick="togglePassword('password1')" aria-label="Show or hide password" title="Show or hide password">
                                     <i class="fas fa-eye" id="password1-icon"></i>
                                 </button>
                             </div>
@@ -236,8 +236,8 @@
                         <div class="form-group">
                             <label for="password2" class="form-label">Confirm Password *</label>
                             <div class="password-input-wrapper">
-                                <input type="password" class="form-control" id="password2" name="password2" required>
-                                <button type="button" class="password-toggle" onclick="togglePassword('password2')">
+                                <input type="password" class="form-control" id="password2" name="password2" required autocomplete="new-password">
+                                <button type="button" class="password-toggle" onclick="togglePassword('password2')" aria-label="Show or hide confirm password" title="Show or hide confirm password">
                                     <i class="fas fa-eye" id="password2-icon"></i>
                                 </button>
                             </div>
@@ -388,8 +388,6 @@
             const strengthText = document.getElementById('strength-text');
 
             let score = 0;
-            let feedback = '';
-
             if (password.length >= 8) score++;
             if (/[a-z]/.test(password)) score++;
             if (/[A-Z]/.test(password)) score++;
