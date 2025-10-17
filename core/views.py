@@ -80,6 +80,11 @@ def dashboard(request):
     return render(request, 'core/dashboard.html')
 
 @login_required
+def trainer_dashboard(request):
+    """Dashboard for trainers"""
+    return render(request, 'core/trainer_dashboard.html')
+
+@login_required
 def profile_update(request):
     """Update user profile view"""
     try:

@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
+         :root {
             --primary-color: #2563eb;
             --secondary-color: #1e40af;
             --accent-color: #f59e0b;
@@ -25,130 +25,158 @@
             --bg-light: #f8fafc;
             --border-color: #e5e7eb;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
             color: var(--text-dark);
             background-color: #fff;
         }
-
+        
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
         }
-
+        
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
             color: var(--primary-color) !important;
         }
-
+        
         .nav-link {
             font-weight: 500;
             color: var(--text-dark) !important;
             transition: color 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
         }
-
+        
         .nav-link:hover {
             color: var(--primary-color) !important;
         }
-
+        
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
         .navbar-nav .nav-item {
             display: flex;
             align-items: center;
         }
-
+        
         .navbar-nav .btn {
             white-space: nowrap;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: none;
+        /* Consistent sizing and alignment for nav items */
+        
+        .navbar .nav-link,
+        .navbar .btn-nav {
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        /* Navbar buttons and dropdown alignment */
+        
+        .navbar .btn-nav {
+            padding: 8px 14px;
             border-radius: 8px;
             font-weight: 600;
-            padding: 12px 24px;
-            transition: all 0.3s ease;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-outline-primary {
+        
+        .navbar .btn-nav-outline {
             border: 2px solid var(--primary-color);
             color: var(--primary-color);
-            border-radius: 8px;
-            font-weight: 600;
-            padding: 12px 24px;
-            transition: all 0.3s ease;
+            background: transparent;
         }
-
-        .btn-outline-primary:hover {
+        
+        .navbar .btn-nav-outline:hover {
             background: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+            color: #fff;
         }
-
+        
+        .navbar .btn-nav-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            border: none;
+        }
+        
+        .navbar .btn-nav-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+        }
+        
+        @media (max-width: 991.98px) {
+            .navbar .dropdown-menu {
+                width: 100%;
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+            }
+            .navbar .btn-nav {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+        
         .section-padding {
             padding: 80px 0;
         }
-
+        
         .text-gradient {
             background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
+        
         .card {
             border: none;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
         }
-
+        
         .card:hover {
             transform: translateY(-8px);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
-
+        
         .footer {
             background: linear-gradient(135deg, var(--text-dark), #374151);
             color: white;
             padding: 60px 0 30px;
         }
-
+        
         .animate-fade-in {
             animation: fadeIn 0.8s ease-in;
         }
-
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
+        
         .hero-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-
+        
         @media (max-width: 768px) {
             .section-padding {
                 padding: 60px 0;
@@ -161,14 +189,13 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'core:landing_page' %}">
                 <i class="fas fa-graduation-cap me-2"></i>Global Coaches Academy
             </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -191,14 +218,30 @@
                         <a class="nav-link" href="{% url 'support:support_center' %}">Support</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-outline-primary ms-2" href="{% url 'core:logout' %}">Logout</a>
+                        <a class="btn btn-nav btn-nav-outline ms-2" href="{% url 'core:logout' %}">Logout</a>
                     </li>
                     {% else %}
-                    <li class="nav-item d-flex align-items-center">
-                        <a class="nav-link" href="{% url 'core:login' %}">Login</a>
+                    <li class="nav-item dropdown d-flex align-items-center">
+                        <a class="dropdown-toggle btn btn-nav btn-nav-outline" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-sign-in-alt me-1"></i> Login
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="loginDropdown">
+                            <li><a class="dropdown-item" href="{% url 'authentication:login_student' %}"><i
+                                        class="fas fa-user-graduate me-2"></i>Student Login</a></li>
+                            <li><a class="dropdown-item" href="{% url 'authentication:login_trainer' %}"><i
+                                        class="fas fa-chalkboard-teacher me-2"></i>Trainer Login</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item d-flex align-items-center">
-                        <a class="btn btn-primary ms-2" href="{% url 'core:register' %}">Join Now</a>
+                    <li class="nav-item dropdown d-flex align-items-center">
+                        <a class="btn btn-nav btn-nav-primary ms-2 dropdown-toggle" href="#" id="registerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-plus me-1"></i> Register
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="registerDropdown">
+                            <li><a class="dropdown-item" href="{% url 'authentication:register_student' %}"><i
+                                        class="fas fa-user-plus me-2"></i>Student Registration</a></li>
+                            <li><a class="dropdown-item" href="{% url 'authentication:register_trainer' %}"><i
+                                        class="fas fa-chalkboard-teacher me-2"></i>Trainer Registration</a></li>
+                        </ul>
                     </li>
                     {% endif %}
                 </ul>
@@ -222,8 +265,7 @@
             <div class="row">
                 <div class="col-lg-4 mb-4">
                     <h5 class="text-gradient mb-3">Global Coaches Academy</h5>
-                    <p class="text-light">Empowering leaders through transformational education and mentorship for
-                        global impact.</p>
+                    <p class="text-light">Empowering leaders through transformational education and mentorship for global impact.</p>
                     <div class="social-links">
                         <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
@@ -234,8 +276,7 @@
                 <div class="col-lg-2 col-md-6 mb-4">
                     <h6 class="text-white mb-3">Quick Links</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'programs:program_overview' %}"
-                                class="text-light text-decoration-none">Program</a></li>
+                        <li><a href="{% url 'programs:program_overview' %}" class="text-light text-decoration-none">Program</a></li>
                         <li><a href="{% url 'support:faq' %}" class="text-light text-decoration-none">FAQ</a></li>
                         <li><a href="{% url 'support:contact' %}" class="text-light text-decoration-none">Contact</a>
                         </li>
@@ -273,15 +314,5 @@
 
     {% block extra_js %}{% endblock %}
 </body>
-
-</html>
-
-
-</body>
-
-</html>
-
-</html>
-
 
 </html>

@@ -339,7 +339,7 @@ def login_student(request):
 def login_trainer(request):
     """Login restricted to Trainer role"""
     if request.user.is_authenticated:
-        return redirect('core:dashboard')
+        return redirect('core:trainer_dashboard')
 
     if is_rate_limited(request, 'login'):
         messages.error(request, 'Too many failed login attempts. Please try again later.')
@@ -359,7 +359,7 @@ def login_trainer(request):
             if profile and profile.is_trainer:
                 login(request, user)
                 log_login_attempt(username, request, success=True)
-                next_url = request.GET.get('next', 'core:dashboard')
+                next_url = request.GET.get('next', 'core:trainer_dashboard')
                 messages.success(request, f'Welcome back, {user.first_name}!')
                 return redirect(next_url)
             else:
